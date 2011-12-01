@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="horizontal"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent" 
+  android:background="@drawable/widget_bg_1x4_watermarked"
+  android:paddingLeft="17px"
+  android:paddingRight="17px"
+  android:paddingTop="23px"
+  android:paddingBottom="23px"
+  android:id="@+id/widgetLayout">
+    <ImageView android:layout_height="fill_parent"
+			   android:src="@drawable/nsr_widget_play"
+			   android:layout_width="wrap_content"
+			   android:id="@+id/widgetImageView"></ImageView>
+    <LinearLayout android:paddingLeft="10px" android:id="@+id/linearLayout1" android:orientation="vertical" android:layout_height="match_parent" android:layout_width="wrap_content">
+        <TextView android:singleLine="true" android:ellipsize="marquee" android:marqueeRepeatLimit="marquee_forever" android:id="@+id/widgetTextViewArtist" android:text="TextView1" android:layout_height="wrap_content" android:layout_width="fill_parent" android:textColor="#000000"></TextView>
+        <TextView android:singleLine="true" android:ellipsize="marquee" android:marqueeRepeatLimit="marquee_forever" android:id="@+id/widgetTextViewTitle" android:text="TextView2" android:layout_height="wrap_content" android:layout_width="fill_parent"></TextView>
+    </LinearLayout>
+    
+</LinearLayout>
