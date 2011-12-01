@@ -120,7 +120,6 @@ public class PlayerService extends Service {
 	}
 	
 	private void setWidgetStopped() {
-		
 		RemoteViews rv = new RemoteViews(getPackageName(), R.layout.widget_layout);
         Intent intent = new Intent(this, PlayerService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
