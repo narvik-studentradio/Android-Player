@@ -1,13 +1,11 @@
 package com.nsr.podcast;
 
-import com.nsr.R;
-import com.nsr.R.id;
-import com.nsr.R.layout;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.nsr.R;
 
 public class PodcastItem extends LinearLayout {
 	private PodcastData data;

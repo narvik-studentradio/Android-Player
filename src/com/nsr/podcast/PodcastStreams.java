@@ -15,8 +15,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.nsr.R;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -26,7 +24,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import com.nsr.R;
 
 public class PodcastStreams extends Activity {
 	/** description, text, url. */
@@ -35,6 +34,7 @@ public class PodcastStreams extends Activity {
 	private ArrayList<PodcastStreamInfo> podcasts;
 	PodcastStreamTask podTask = null;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

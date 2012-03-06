@@ -1,12 +1,10 @@
 package com.nsr.podcast;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -18,17 +16,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.nsr.Player;
-import com.nsr.R;
-import com.nsr.R.id;
-import com.nsr.R.layout;
-
 import android.app.Activity;
 import android.app.DownloadManager;
-import android.app.Notification;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -38,10 +29,14 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.nsr.Player;
+import com.nsr.R;
+
 public class Podcasts extends Activity {
 	private ArrayList<PodcastData> data;
 	PodcastTask podTask = null;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
