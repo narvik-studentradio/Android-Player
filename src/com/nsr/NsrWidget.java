@@ -28,6 +28,7 @@ public class NsrWidget extends AppWidgetProvider{
 
      
             Intent activityIntent = new Intent(context, Player.class);
+            activityIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             PendingIntent activityPendingIntent = PendingIntent.getActivity(context, 0, activityIntent, 0);
             
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);

@@ -1,9 +1,8 @@
-package com.nsr;
+package com.nsr.podcast;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -13,14 +12,14 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.nsr.R;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -34,6 +33,7 @@ public class PodcastStreams extends Activity {
 	public static final String INTENT_KEY_STREAM_INFO = "com.nsr.podcast.StreamData";
 	
 	private ArrayList<PodcastStreamInfo> podcasts;
+	PodcastStreamTask podTask = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,18 +42,11 @@ public class PodcastStreams extends Activity {
 		
 		Object last = getLastNonConfigurationInstance();
 		if(last == null) {
-			podcasts = new ArrayList<PodcastStreamInfo>();/*
-			PodcastData testData = new PodcastData();
-			testData.description = "Testdata";
-			PodcastStreamInfo testStream = new PodcastStreamInfo();
-			testStream.podcasts.add(testData);
-			podcasts.add(testStream);*/
-			
-			PodcastStreamTask podTask = new PodcastStreamTask();
+			podcasts = new ArrayList<PodcastStreamInfo>();
+			podTask = new PodcastStreamTask();
 			podTask.execute((Void)null);
 		}
 		else {
-			Toast.makeText(this, "Saved data", Toast.LENGTH_SHORT).show();
 			podcasts = (ArrayList<PodcastStreamInfo>) last;
 			initList();
 		}
@@ -80,6 +73,12 @@ public class PodcastStreams extends Activity {
 	
 	@Override
 	public Object onRetainNonConfigurationInstance() {
+		if(podTask != null && podTask.getStatus() != AsyncTask.Status.FINISHED)
+		{
+			podTask.pd.dismiss();
+			podTask.cancel(true);
+			return null;
+		}
 		return podcasts;
 	}
 	
@@ -117,8 +116,6 @@ public class PodcastStreams extends Activity {
 					for(int i=0; i<1; i++) {//outlines.getLength(); i++) {
 						Element outline = (Element) outlines.item(i);
 						
-						//String title = outline.getAttribute("title");
-						
 						NodeList subOutlines = outline.getElementsByTagName("outline");
 						for(int j=1; j<subOutlines.getLength(); j++) {
 							Element subOutline = (Element) subOutlines.item(j);
@@ -132,12 +129,7 @@ public class PodcastStreams extends Activity {
 							thisStream.description = subDesc;
 							thisStream.url = subUrl;
 							
-							//getPodcasts(subUrl, thisStream);
-							
 							podcasts.add(thisStream);
-							
-							int k=0;
-							k++;
 						}
 						int j=0;
 						j++;
@@ -157,38 +149,6 @@ public class PodcastStreams extends Activity {
 			
 			
 		}
-		/*
-		private void getPodcasts(String url, PodcastStreamInfo stream) throws IOException, SAXException, ParserConfigurationException {
-			URL url_ = new URL(url);
-    		
-			HttpURLConnection httpConnection = (HttpURLConnection)url_.openConnection();
-			
-			if(httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				
-				InputStream in = httpConnection.getInputStream();
-				Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(in);
-				Element docElement = doc.getDocumentElement();
-				
-				Element body = (Element)docElement.getElementsByTagName("channel").item(0);
-				NodeList outlines = docElement.getElementsByTagName("item");
-				
-				for(int i=0; i<outlines.getLength(); i++) {
-					Element ele = (Element) outlines.item(i);
-					
-					String eleTitle = ele.getElementsByTagName("title").item(0).getFirstChild().getNodeValue();
-					String eleUrl = ele.getElementsByTagName("link").item(0).getFirstChild().getNodeValue();
-					String eleDate = ele.getElementsByTagName("pubDate").item(0).getFirstChild().getNodeValue();
-					
-					PodcastData thisCast = new PodcastData();
-					
-					thisCast.description = eleTitle;
-					thisCast.date = eleDate;
-					thisCast.url = eleUrl;
-					
-					stream.podcasts.add(thisCast);
-				}
-			}
-		}*/
 		
 		@Override
 		protected void onPostExecute(String[] result) {

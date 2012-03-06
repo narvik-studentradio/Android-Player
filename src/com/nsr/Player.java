@@ -1,46 +1,20 @@
 package com.nsr;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.NotActiveException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.CharsetDecoder;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import com.nsr.podcast.PodcastStreams;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnBufferingUpdateListener;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.media.MediaPlayer.OnErrorListener;
-import android.media.MediaPlayer.OnInfoListener;
-import android.media.MediaPlayer.OnPreparedListener;
-import android.media.MediaPlayer.OnSeekCompleteListener;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-public class Player extends Activity {
+public class Player extends Activity implements OnClickListener {
 	private PlayerService playerService;
 	private PlayerReceiver receiver;
 	
@@ -50,31 +24,28 @@ public class Player extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 		
-		final Intent serviceIntent = new Intent(getApplicationContext(), PlayerService.class);
-        
-        Button btn = (Button)findViewById(R.id.button1);
-        btn.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				startService(serviceIntent);
-			}
-		});
-        
-        Button btnStop = (Button)findViewById(R.id.button2);
-        btnStop.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				stopService(serviceIntent);
-			}
-		});
-        
-        ((ImageView)findViewById(R.id.imageViewLargeIcon)).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				startActivity(new Intent(Player.this, PodcastStreams.class));
-			}
-		});
+        ((Button)findViewById(R.id.button1)).setOnClickListener(this);
+        ((Button)findViewById(R.id.button2)).setOnClickListener(this);
+        ((ImageView)findViewById(R.id.imageViewLargeIcon)).setOnClickListener(this);
     }
+
+	@Override
+	public void onClick(View v) {
+		final Intent serviceIntent = new Intent(getApplicationContext(), PlayerService.class);
+		switch(v.getId()) {
+		case R.id.button1:
+			startService(serviceIntent);
+			break;
+		case R.id.button2:
+			stopService(serviceIntent);
+			break;
+		case R.id.imageViewLargeIcon:
+			startActivity(new Intent(Player.this, com.nsr.podcast.PodcastStreams.class));
+			break;
+		default:
+			break;
+		}
+	}
     
     @Override
 	protected void onPause() {

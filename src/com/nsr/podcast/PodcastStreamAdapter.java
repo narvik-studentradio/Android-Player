@@ -1,4 +1,4 @@
-package com.nsr;
+package com.nsr.podcast;
 
 import java.util.ArrayList;
 

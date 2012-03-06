@@ -1,4 +1,4 @@
-package com.nsr;
+package com.nsr.podcast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -17,9 +18,18 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.nsr.Player;
+import com.nsr.R;
+import com.nsr.R.id;
+import com.nsr.R.layout;
+
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.app.Notification;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,7 +40,8 @@ import android.widget.ListView;
 
 public class Podcasts extends Activity {
 	private ArrayList<PodcastData> data;
-
+	PodcastTask podTask = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,8 +51,8 @@ public class Podcasts extends Activity {
 		if(retained == null) {
 			Intent intent = getIntent();
 			String[] streamInfo = intent.getStringArrayExtra(PodcastStreams.INTENT_KEY_STREAM_INFO);
-			PodcastTask task = new PodcastTask();
-			task.execute(new String[]{streamInfo[2]});
+			podTask = new PodcastTask();
+			podTask.execute(new String[]{streamInfo[2]});
 		}
 		else {
 			data = (ArrayList<PodcastData>) retained;
@@ -58,68 +69,32 @@ public class Podcasts extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
 				PodcastItem item = (PodcastItem) view;
-				try {
-					//set the download URL, a url that points to a file on the internet
-					//this is the file to be downloaded
-					URL url = new URL(item.getData().url);
-
-					//create the new connection
-					HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-					//set up some things on the connection
-					urlConnection.setRequestMethod("GET");
-					urlConnection.setDoOutput(true);
-
-					//and connect!
-					urlConnection.connect();
-
-					//set the path where we want to save the file
-					//in this case, going to save it on the root directory of the
-					//sd card.
-					File SDCardRoot = Environment.getExternalStorageDirectory();
-					//create a new file, specifying the path, and the filename
-					//which we want to save the file as.
-					File file = new File(SDCardRoot,"nsrDownload.mp3");
-
-					//this will be used to write the downloaded data into the file we created
-					FileOutputStream fileOutput = new FileOutputStream(file);
-
-					//this will be used in reading the data from the internet
-					InputStream inputStream = urlConnection.getInputStream();
-
-					//this is the total size of the file
-					int totalSize = urlConnection.getContentLength();
-					//variable to store total downloaded bytes
-					int downloadedSize = 0;
-
-					//create a buffer...
-					byte[] buffer = new byte[1024];
-					int bufferLength = 0; //used to store a temporary size of the buffer
-
-					//now, read through the input buffer and write the contents to the file
-					while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
-						//add the data in the buffer to the file in the file output stream (the file on the sd card
-						fileOutput.write(buffer, 0, bufferLength);
-						//add up the size so we know how much is downloaded
-						downloadedSize += bufferLength;
-
-					}
-					//close the output stream when done
-					fileOutput.close();
-
-				//catch some possible errors...
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				// see http://androidsnippets.com/download-an-http-file-to-sdcard-with-progress-notification
+				
+				File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PODCASTS);
+				downloadDir.mkdirs();
+				
+				Uri uri = Uri.parse(item.getData().url);
+				
+				DownloadManager mgr = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+				DownloadManager.Request req = new DownloadManager.Request(uri);
+				req.setTitle("NSR download");
+				req.setDescription(item.getData().description);
+				req.setDestinationInExternalPublicDir(Environment.DIRECTORY_PODCASTS, item.getData().url.substring(item.getData().url.lastIndexOf("/")));
+				mgr.enqueue(req);
+				
+				Intent backIntent = new Intent(Podcasts.this, Player.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(backIntent);
 			}
 		});
 	}
 	
 	@Override
 	public Object onRetainNonConfigurationInstance() {
+		if(podTask.getStatus() != AsyncTask.Status.FINISHED) {
+			podTask.pd.dismiss();
+			podTask.cancel(true);
+			return null;
+		}
 		return data;
 	}
 	

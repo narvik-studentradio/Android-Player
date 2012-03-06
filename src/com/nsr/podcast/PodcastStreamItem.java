@@ -1,4 +1,8 @@
-package com.nsr;
+package com.nsr.podcast;
+
+import com.nsr.R;
+import com.nsr.R.id;
+import com.nsr.R.layout;
 
 import android.content.Context;
 import android.view.LayoutInflater;

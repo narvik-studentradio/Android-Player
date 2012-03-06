@@ -22,10 +22,11 @@ public final class R {
         public static final int nsr_widget_pause=0x7f020008;
         public static final int nsr_widget_play=0x7f020009;
         public static final int nsr_widget_red=0x7f02000a;
-        public static final int widget_bg_1x2=0x7f02000b;
-        public static final int widget_bg_1x4=0x7f02000c;
-        public static final int widget_bg_1x4_alt=0x7f02000d;
-        public static final int widget_bg_1x4_watermarked=0x7f02000e;
+        public static final int status=0x7f02000b;
+        public static final int widget_bg_1x2=0x7f02000c;
+        public static final int widget_bg_1x4=0x7f02000d;
+        public static final int widget_bg_1x4_alt=0x7f02000e;
+        public static final int widget_bg_1x4_watermarked=0x7f02000f;
     }
     public static final class id {
         public static final int button1=0x7f060002;

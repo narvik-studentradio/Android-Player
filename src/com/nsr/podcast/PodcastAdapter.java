@@ -1,6 +1,7 @@
-package com.nsr;
+package com.nsr.podcast;
 
 import java.util.ArrayList;
+
 
 import android.content.Context;
 import android.view.View;
