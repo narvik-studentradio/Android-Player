@@ -17,6 +17,7 @@ import android.widget.Toast;
 public class Player extends Activity implements OnClickListener {
 	private PlayerService playerService;
 	private PlayerReceiver receiver;
+	private MetadataTracker metadataTracker;
 	
     /** Called when the activity is first created. */
     @Override
@@ -24,22 +25,33 @@ public class Player extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 		
-        ((Button)findViewById(R.id.button1)).setOnClickListener(this);
-        ((Button)findViewById(R.id.button2)).setOnClickListener(this);
-        ((ImageView)findViewById(R.id.imageViewLargeIcon)).setOnClickListener(this);
+        ((Button)findViewById(R.id.buttonStart)).setOnClickListener(this);
+        ((Button)findViewById(R.id.buttonStop)).setOnClickListener(this);
+        ((Button)findViewById(R.id.buttonPodcast)).setOnClickListener(this);
+        
+        metadataTracker = new MetadataTracker(new Runnable() {
+			@Override
+			public void run() {
+				metadataUpdate();
+			}
+		});
+    }
+    
+    private void metadataUpdate() {
+    	Toast.makeText(Player.this, metadataTracker.getPlaying().title, Toast.LENGTH_SHORT).show();
     }
 
 	@Override
 	public void onClick(View v) {
 		final Intent serviceIntent = new Intent(getApplicationContext(), PlayerService.class);
 		switch(v.getId()) {
-		case R.id.button1:
+		case R.id.buttonStart:
 			startService(serviceIntent);
 			break;
-		case R.id.button2:
+		case R.id.buttonStop:
 			stopService(serviceIntent);
 			break;
-		case R.id.imageViewLargeIcon:
+		case R.id.buttonPodcast:
 			startActivity(new Intent(Player.this, com.nsr.podcast.PodcastStreams.class));
 			break;
 		default:
@@ -65,6 +77,7 @@ public class Player extends Activity implements OnClickListener {
 
 	@Override
 	protected void onDestroy() {
+		metadataTracker.close();
 		super.onDestroy();
 	}
     

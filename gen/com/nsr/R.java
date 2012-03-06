@@ -22,28 +22,30 @@ public final class R {
         public static final int nsr_widget_pause=0x7f020008;
         public static final int nsr_widget_play=0x7f020009;
         public static final int nsr_widget_red=0x7f02000a;
-        public static final int status=0x7f02000b;
-        public static final int widget_bg_1x2=0x7f02000c;
-        public static final int widget_bg_1x4=0x7f02000d;
-        public static final int widget_bg_1x4_alt=0x7f02000e;
-        public static final int widget_bg_1x4_watermarked=0x7f02000f;
+        public static final int nsr_widget_styled_green=0x7f02000b;
+        public static final int status=0x7f02000c;
+        public static final int widget_bg_1x2=0x7f02000d;
+        public static final int widget_bg_1x4=0x7f02000e;
+        public static final int widget_bg_1x4_alt=0x7f02000f;
+        public static final int widget_bg_1x4_watermarked=0x7f020010;
     }
     public static final class id {
-        public static final int button1=0x7f060002;
-        public static final int button2=0x7f060003;
+        public static final int buttonPodcast=0x7f060002;
+        public static final int buttonStart=0x7f060003;
+        public static final int buttonStop=0x7f060004;
         public static final int imageViewLargeIcon=0x7f060001;
-        public static final int linearLayout1=0x7f06000c;
-        public static final int listView=0x7f060009;
-        public static final int listViewPodcasts=0x7f060008;
+        public static final int linearLayout1=0x7f06000d;
+        public static final int listView=0x7f06000a;
+        public static final int listViewPodcasts=0x7f060009;
         public static final int relativeLayout=0x7f060000;
-        public static final int textViewText=0x7f060007;
-        public static final int textViewTitle=0x7f060006;
-        public static final int textViewTtl=0x7f060004;
-        public static final int textViewTxt=0x7f060005;
-        public static final int widgetImageView=0x7f06000b;
-        public static final int widgetLayout=0x7f06000a;
-        public static final int widgetTextViewArtist=0x7f06000d;
-        public static final int widgetTextViewTitle=0x7f06000e;
+        public static final int textViewText=0x7f060008;
+        public static final int textViewTitle=0x7f060007;
+        public static final int textViewTtl=0x7f060005;
+        public static final int textViewTxt=0x7f060006;
+        public static final int widgetImageView=0x7f06000c;
+        public static final int widgetLayout=0x7f06000b;
+        public static final int widgetTextViewArtist=0x7f06000e;
+        public static final int widgetTextViewTitle=0x7f06000f;
     }
     public static final class layout {
         public static final int main=0x7f030000;

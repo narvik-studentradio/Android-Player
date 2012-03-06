@@ -3,7 +3,9 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:id="@+id/relativeLayout">
+  android:id="@+id/relativeLayout"
+  android:layout_margin="0dp"
+  >
     <ImageView android:id="@+id/imageViewLargeIcon" 
     		   android:layout_width="wrap_content" 
     		   android:layout_height="wrap_content" 
@@ -16,18 +18,40 @@
     </ImageView>
     <TableLayout android:layout_width="fill_parent"
     			  android:layout_height="wrap_content"
+    			  android:layout_alignParentTop="true"
+    			  android:layout_alignParentLeft="true"
+    			  android:layout_alignParentRight="true"
+    			  android:stretchColumns="0,1"
+    			  android:padding="10dp"
+    			  >
+    	<TableRow>
+		    <Button android:id="@+id/buttonPodcast"
+		    		android:layout_height="wrap_content"
+		    		android:layout_width="wrap_content"
+		    		android:text="Podcasts"
+		 	/>
+		    <Button	android:layout_height="wrap_content"
+		    		android:layout_width="wrap_content"
+		    		android:text="Dummy"
+		    		android:visibility="invisible"
+		 	/>
+		</TableRow>
+    </TableLayout>
+    <TableLayout android:layout_width="fill_parent"
+    			  android:layout_height="wrap_content"
     			  android:layout_alignParentBottom="true"
     			  android:layout_alignParentLeft="true"
     			  android:layout_alignParentRight="true"
     			  android:stretchColumns="0,1"
+    			  android:padding="10dp"
     			  >
     	<TableRow>
-		    <Button android:id="@+id/button1"
+		    <Button android:id="@+id/buttonStart"
 		    		android:layout_height="wrap_content"
 		    		android:layout_width="wrap_content"
 		    		android:text="Start"
 		    />
-		    <Button android:id="@+id/button2" 
+		    <Button android:id="@+id/buttonStop" 
 				    android:layout_height="wrap_content" 
 				    android:layout_width="wrap_content" 
 				    android:text="Stop" 
