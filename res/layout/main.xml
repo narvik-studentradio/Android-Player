@@ -45,13 +45,36 @@
     			  android:stretchColumns="0,1"
     			  android:padding="10dp"
     			  >
+   		<TableRow>
+   			<TextView android:id="@+id/appTxtArtist" 
+   					  android:layout_width="fill_parent"
+   					  android:layout_height="wrap_content"
+ 					  android:layout_span="2"
+   					  android:background="#A0FFFFFF"
+   					  android:textColor="#000000"
+   					  android:padding="10dp"
+   					  android:layout_marginBottom="5dp"
+   					  />
+   		</TableRow>
+   		<TableRow>
+   			<TextView android:id="@+id/appTxtTitle" 
+   					  android:layout_width="fill_parent"
+   					  android:layout_height="wrap_content"
+ 					  android:layout_span="2"
+   					  android:background="#A0FFFFFF"
+   					  android:textColor="#000000"
+   					  android:padding="10dp"
+   					  android:layout_marginTop="5dp"
+   					  android:layout_marginBottom="10dp"
+   					  />
+   		</TableRow>
  		<TableRow>
  			<ProgressBar android:id="@+id/progressBar"
  					 	 android:layout_width="fill_parent"
  						 android:layout_height="wrap_content"
  						 style="@android:style/Widget.ProgressBar.Horizontal"
  						 android:layout_span="2"
-		    			 android:paddingBottom="10dp"
+		    			 android:layout_marginBottom="10dp"
  						 />
  		</TableRow>
     	<TableRow>
