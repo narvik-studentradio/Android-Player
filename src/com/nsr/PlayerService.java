@@ -30,7 +30,7 @@ import android.widget.RemoteViews;
 
 public class PlayerService extends Service {
 	private MediaPlayer mediaPlayer;
-	private Metadataz metadata;
+	private MetadataTracker metadataTracker;
 	
 	private static PlayerService instance;
 	public static PlayerService getInstance() {
@@ -45,7 +45,10 @@ public class PlayerService extends Service {
 	public static final String KEY_MESSAGE = "service_message";
 	public static final String KEY_METADATA_TITLE = "metadata_title";
 	public static final String KEY_METADATA_ARTIST = "metadata_artist";
-	public static final String KEY_METADATA_URL = "metadata_url";
+	public static final String KEY_METADATA_ALBUM = "metadata_album";
+	public static final String KEY_METADATA_DURATION = "metadata_duration";
+	public static final String KEY_METADATA_REMAINING = "metadata_remaining";
+	public static final String KEY_METADATA_TYPE = "metadata_type";
 	public static final String MESSAGE_PLAYER_STARTED = "player_started";
 	public static final String MESSAGE_METADATA_UPDATE = "metadata_update";
 	public static final String MESSAGE_ERROR = "error";
@@ -96,8 +99,14 @@ public class PlayerService extends Service {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		MetadataTask mt = new MetadataTask();
-		mt.execute((Void)null);
+		if(metadataTracker == null) {
+			metadataTracker = new MetadataTracker(new Runnable() {
+				@Override
+				public void run() {
+					sendMetadata();
+				}
+			});
+		}
 		setWidgetStarted();
 	}
 	
@@ -128,19 +137,22 @@ public class PlayerService extends Service {
         rv.setTextViewText(R.id.widgetTextViewArtist, "NSR Widget");
         rv.setTextViewText(R.id.widgetTextViewTitle, "");
         
-        sendRemoteViews(rv);
+        sendRemoteViews(rv);/*
         
         Intent testIntent = new Intent("android.appwidget.action.APPWIDGET_UPDATE");
-        sendBroadcast(testIntent);
+        sendBroadcast(testIntent);*/
 	}
 	
 	private void sendMessage(String type, String... message) {
 		Intent messageIntent = new Intent(INTENT_CALLBACK);
 		messageIntent.putExtra(KEY_MESSAGE, type);
-		if(type.equals(MESSAGE_METADATA_UPDATE) && message.length >= 3) {
+		if(type.equals(MESSAGE_METADATA_UPDATE) && message.length >= 6) {
 			messageIntent.putExtra(KEY_METADATA_ARTIST, message[0]);
 			messageIntent.putExtra(KEY_METADATA_TITLE, message[1]);
-			messageIntent.putExtra(KEY_METADATA_URL, message[2]);
+			messageIntent.putExtra(KEY_METADATA_ALBUM, message[2]);
+			messageIntent.putExtra(KEY_METADATA_DURATION, message[3]);
+			messageIntent.putExtra(KEY_METADATA_REMAINING, message[4]);
+			messageIntent.putExtra(KEY_METADATA_TYPE, message[5]);
 		}
 		sendBroadcast(messageIntent);
 		
@@ -152,6 +164,21 @@ public class PlayerService extends Service {
 		}
 	}
 	
+	private void sendMetadata() {
+		if(metadataTracker == null) {
+			metadataTracker = new MetadataTracker(new Runnable() {
+				@Override
+				public void run() {
+					sendMetadata();
+				}
+			});
+			return;
+		}
+		SongData song = metadataTracker.getPlaying();
+		sendMessage(MESSAGE_METADATA_UPDATE, song.artist, song.title, song.album,
+				Integer.toString(song.duration), Integer.toString(song.remaining), song.type);
+	}
+	
 	private class WidgetCommReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -159,62 +186,10 @@ public class PlayerService extends Service {
 				if(intent.getExtras().getString(KEY_COMMAND).equals(COMMAND_STOP_PLAYER))
 					PlayerService.this.stopSelf();
 				else if(intent.getExtras().getString(KEY_COMMAND).equals(COMMAND_REQUEST_METADATA)) {
-					if(metadata == null) {
-						MetadataTask metaTask = new MetadataTask();
-						metaTask.execute((Void)null);
-					}
-					else
-						sendMessage(MESSAGE_METADATA_UPDATE, metadata.artist, metadata.title, metadata.url);
+					sendMetadata();
 				}
 			}
 		}
-	}
-	
-	private class MetadataTask extends AsyncTask<Void, Void, String[]> {
-		@Override
-		protected String[] doInBackground(Void... arg0) {
-			try {
-	    		URL url = new URL("http://stream.sysrq.no:8000/status2.xsl");
-				
-				HttpURLConnection httpConnection = (HttpURLConnection)url.openConnection();
-				
-				if(httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-					
-					InputStream in = httpConnection.getInputStream();
-					Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(in);
-					Element docElement = doc.getDocumentElement();
-					
-					String metadata = docElement.getFirstChild().getNodeValue();
-					String[] metadataz = metadata.split(",");
-					String title = metadataz[16];
-					return new String[]{title};
-				}
-			} catch (DOMException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (SAXException e) {
-				e.printStackTrace();
-			} catch (ParserConfigurationException e) {
-				e.printStackTrace();
-			}
-			return new String[]{""};
-		}
-		@Override
-		protected void onPostExecute(String[] result) {
-			if(metadata == null)
-				metadata = new Metadataz();
-			metadata.artist = result[0];
-			metadata.title = result[0];
-			metadata.url = result[0];
-			sendMessage(MESSAGE_METADATA_UPDATE, result[0], result[0], result[0]);
-		}
-	}
-	
-	private class Metadataz {
-		public String artist;
-		public String title;
-		public String url;
 	}
 	
 	@Override
@@ -228,6 +203,7 @@ public class PlayerService extends Service {
 		setWidgetStopped();
 		mediaPlayer.release();
 		instance = null;
+		metadataTracker.close();
 		super.onDestroy();
 	}
 

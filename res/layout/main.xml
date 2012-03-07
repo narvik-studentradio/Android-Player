@@ -45,6 +45,15 @@
     			  android:stretchColumns="0,1"
     			  android:padding="10dp"
     			  >
+ 		<TableRow>
+ 			<ProgressBar android:id="@+id/progressBar"
+ 					 	 android:layout_width="fill_parent"
+ 						 android:layout_height="wrap_content"
+ 						 style="@android:style/Widget.ProgressBar.Horizontal"
+ 						 android:layout_span="2"
+		    			 android:paddingBottom="10dp"
+ 						 />
+ 		</TableRow>
     	<TableRow>
 		    <Button android:id="@+id/buttonStart"
 		    		android:layout_height="wrap_content"
