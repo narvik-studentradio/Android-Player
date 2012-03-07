@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,21 +25,23 @@ import android.os.AsyncTask;
 public class MetadataTracker implements Closeable {
 	private static final String METADATA_URL = "http://nsr-mb.samfunnet.no/xml/metadata";
 	private Runnable updateCommand;
-	private ArrayList<SongData> history;
+	private List<SongData> history;
 	private Timer timer;
 	private boolean canceled = false;
 
 	public MetadataTracker(Runnable updateCommand) {
 		this.updateCommand = updateCommand;
-		history = new ArrayList<SongData>();
+		history = Collections.synchronizedList(new ArrayList<SongData>());
 		timer = new Timer();
 		fetchMetadata();
 	}
 	
 	public SongData getPlaying() {
-		if(history == null || history.size() <= 0)
-			return null;
-		return history.get(0);
+		synchronized(history){
+			if(history == null || history.size() <= 0)
+				return null;
+			return history.get(0);
+		}
 	}
 	
 	private void fetchMetadata() {
