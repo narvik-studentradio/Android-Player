@@ -113,7 +113,7 @@ public class MetadataTracker implements Closeable {
 							duration = Integer.parseInt(eleDuration);
 						}catch(NumberFormatException e){duration = 200;}
 						
-						SongData song = new SongData(eleArtist, eleTitle, eleAlbum, duration, remaining, eleType);
+						SongData song = new SongData(eleArtist, eleTitle, eleAlbum, duration, remaining, eleType, System.currentTimeMillis());
 						history.add(song);
 					}
 					return true;

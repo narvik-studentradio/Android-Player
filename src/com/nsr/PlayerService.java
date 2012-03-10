@@ -1,17 +1,6 @@
 package com.nsr;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -24,7 +13,6 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
-import android.os.AsyncTask;
 import android.os.IBinder;
 import android.widget.RemoteViews;
 
@@ -49,6 +37,7 @@ public class PlayerService extends Service {
 	public static final String KEY_METADATA_DURATION = "metadata_duration";
 	public static final String KEY_METADATA_REMAINING = "metadata_remaining";
 	public static final String KEY_METADATA_TYPE = "metadata_type";
+	public static final String KEY_METADATA_TIMESTAMP = "metadata_timestamp";
 	public static final String MESSAGE_PLAYER_STARTED = "player_started";
 	public static final String MESSAGE_METADATA_UPDATE = "metadata_update";
 	public static final String MESSAGE_ERROR = "error";
@@ -146,13 +135,14 @@ public class PlayerService extends Service {
 	private void sendMessage(String type, String... message) {
 		Intent messageIntent = new Intent(INTENT_CALLBACK);
 		messageIntent.putExtra(KEY_MESSAGE, type);
-		if(type.equals(MESSAGE_METADATA_UPDATE) && message.length >= 6) {
+		if(type.equals(MESSAGE_METADATA_UPDATE) && message.length >= 7) {
 			messageIntent.putExtra(KEY_METADATA_ARTIST, message[0]);
 			messageIntent.putExtra(KEY_METADATA_TITLE, message[1]);
 			messageIntent.putExtra(KEY_METADATA_ALBUM, message[2]);
 			messageIntent.putExtra(KEY_METADATA_DURATION, message[3]);
 			messageIntent.putExtra(KEY_METADATA_REMAINING, message[4]);
 			messageIntent.putExtra(KEY_METADATA_TYPE, message[5]);
+			messageIntent.putExtra(KEY_METADATA_TIMESTAMP, message[6]);
 		}
 		sendBroadcast(messageIntent);
 		
@@ -175,8 +165,11 @@ public class PlayerService extends Service {
 			return;
 		}
 		SongData song = metadataTracker.getPlaying();
+		if(song == null)
+			return;
 		sendMessage(MESSAGE_METADATA_UPDATE, song.artist, song.title, song.album,
-				Integer.toString(song.duration), Integer.toString(song.remaining), song.type);
+				Integer.toString(song.duration), Integer.toString(song.remaining),
+				song.type, Long.toString(song.timestamp));
 	}
 	
 	private class WidgetCommReceiver extends BroadcastReceiver {

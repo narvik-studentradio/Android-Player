@@ -7,9 +7,10 @@ public class SongData {
 	public int duration;
 	public int remaining;
 	public String type;
+	public long timestamp;
 	
 	public SongData(String artist, String title, String album, int duration,
-			int remaining, String type) {
+			int remaining, String type, long timestamp) {
 		super();
 		this.artist = artist;
 		this.title = title;
@@ -17,5 +18,6 @@ public class SongData {
 		this.duration = duration;
 		this.remaining = remaining;
 		this.type = type;
+		this.timestamp = timestamp;
 	}
 }

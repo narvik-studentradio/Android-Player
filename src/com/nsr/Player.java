@@ -21,6 +21,7 @@ public class Player extends Activity implements OnClickListener {
 	private ProgressBar progressBar;
 	private TextView txtArtist;
 	private TextView txtTitle;
+	private SongData playing;
 	
     /** Called when the activity is first created. */
     @Override
@@ -42,26 +43,32 @@ public class Player extends Activity implements OnClickListener {
 					progressBar.post(new Runnable() {
 						@Override
 						public void run() {
-							progressBar.setProgress(progressBar.getProgress()+1);
+							updateProgress();
 						}
 					});
 			}
 		}, 1000, 1000);
         
-        Object retained = getLastNonConfigurationInstance();
-        if(retained != null) {
-        	txtArtist.setText(((String[])retained)[0]);
-        	txtTitle.setText(((String[])retained)[1]);
-        	progressBar.setMax(Integer.parseInt(((String[])retained)[2]));
-        	progressBar.setProgress(Integer.parseInt(((String[])retained)[3]));
-        }
+        updateProgress();
+    }
+    
+    private void updateProgress() {
+    	if(playing == null) {
+            Intent mdReq = new Intent(PlayerService.INTENT_COMMAND);
+            mdReq.putExtra(PlayerService.KEY_COMMAND, PlayerService.COMMAND_REQUEST_METADATA);
+        	sendBroadcast(mdReq);
+    		return;
+    	}
+    	int passed = (int) (System.currentTimeMillis() - playing.timestamp) / 1000;
+    	progressBar.setProgress(playing.duration - playing.remaining + passed);
     }
     
     private void metadataUpdate(SongData song) {
+    	playing = song;
     	txtArtist.setText(song.artist);
     	txtTitle.setText(song.title);
     	progressBar.setMax(song.duration);
-    	progressBar.setProgress(song.duration - song.remaining);
+    	updateProgress();
     }
 
 	@Override
@@ -106,7 +113,7 @@ public class Player extends Activity implements OnClickListener {
 		progressTimer.cancel();
 		super.onDestroy();
 	}
-    
+    /*
     @Override
 	public Object onRetainNonConfigurationInstance() {
     	if(txtArtist==null || txtTitle==null)
@@ -114,7 +121,7 @@ public class Player extends Activity implements OnClickListener {
     	String[] data = {(String) txtArtist.getText(), (String) txtTitle.getText(),
     			Integer.toString(progressBar.getMax()), Integer.toString(progressBar.getProgress())};
     	return data;
-	}
+	}*/
 
 	private class PlayerReceiver extends BroadcastReceiver {
 		@Override
@@ -130,7 +137,8 @@ public class Player extends Activity implements OnClickListener {
 					int duration = Integer.parseInt(extras.getString(PlayerService.KEY_METADATA_DURATION));
 					int remaining = Integer.parseInt(extras.getString(PlayerService.KEY_METADATA_REMAINING));
 					String type = extras.getString(PlayerService.KEY_METADATA_TYPE);
-					SongData song = new SongData(artist, title, album, duration, remaining, type);
+					long timestamp = Long.parseLong(extras.getString(PlayerService.KEY_METADATA_TIMESTAMP));
+					SongData song = new SongData(artist, title, album, duration, remaining, type, timestamp);
 					metadataUpdate(song);
 				}
 			}
