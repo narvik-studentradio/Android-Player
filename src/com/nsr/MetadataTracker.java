@@ -44,6 +44,10 @@ public class MetadataTracker implements Closeable {
 		}
 	}
 	
+	public List<SongData> getHistory() {
+		return history;
+	}
+	
 	private void fetchMetadata() {
 		MetadataTask mt = new MetadataTask();
 		mt.execute();

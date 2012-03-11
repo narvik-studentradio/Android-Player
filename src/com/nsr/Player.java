@@ -32,6 +32,7 @@ public class Player extends Activity implements OnClickListener {
         ((Button)findViewById(R.id.buttonStart)).setOnClickListener(this);
         ((Button)findViewById(R.id.buttonStop)).setOnClickListener(this);
         ((Button)findViewById(R.id.buttonPodcast)).setOnClickListener(this);
+        ((Button)findViewById(R.id.buttonHistory)).setOnClickListener(this);
         txtArtist = (TextView)findViewById(R.id.appTxtArtist);
         txtTitle = (TextView)findViewById(R.id.appTxtTitle);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
@@ -86,6 +87,9 @@ public class Player extends Activity implements OnClickListener {
 			break;
 		case R.id.buttonPodcast:
 			startActivity(new Intent(Player.this, com.nsr.podcast.PodcastStreams.class));
+			break;
+		case R.id.buttonHistory:
+			startActivity(new Intent(Player.this, History.class));
 			break;
 		default:
 			break;

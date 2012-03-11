@@ -1,6 +1,8 @@
 package com.nsr;
 
 import java.io.IOException;
+import java.util.List;
+
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -23,6 +25,11 @@ public class PlayerService extends Service {
 	private static PlayerService instance;
 	public static PlayerService getInstance() {
 		return instance;
+	}
+	public static List<SongData> getHistory() {
+		if(instance == null)
+			return null;
+		return instance.metadataTracker.getHistory();
 	}
 	public static final int NOTIFICATION = 33462;
 	public static final String INTENT_COMMAND = "com.nsr.playerservice.intent_command";
