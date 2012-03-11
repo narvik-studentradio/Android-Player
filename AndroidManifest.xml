@@ -26,7 +26,8 @@
 	   		/>
         </receiver>
         <activity android:label="Podcast streams" android:name=".podcast.PodcastStreams"></activity>
-        <activity android:label="Podcasts" android:name=".podcast.Podcasts"></activity>
+        <activity android:label="Podcasts" android:name=".podcast.Podcasts" android:configChanges="orientation"></activity>
+        <activity android:name="History" android:label="Radio history"></activity>
 
     </application>
 </manifest>
