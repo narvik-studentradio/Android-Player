@@ -36,6 +36,7 @@ public class History extends Activity {
 		case DIALOG_ERROR :
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("No history available.")
+				   .setCancelable(false)
 				   .setPositiveButton("Ok", new OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -43,7 +44,7 @@ public class History extends Activity {
 					}
 				});
 			dialog = builder.create();
-		break;
+			break;
 		default :
 			dialog = null;
 			break;
