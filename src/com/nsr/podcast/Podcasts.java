@@ -17,9 +17,13 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,6 +37,7 @@ import com.nsr.Player;
 import com.nsr.R;
 
 public class Podcasts extends Activity {
+	private static final int DIALOG_ERROR = 0;
 	private ArrayList<PodcastData> data;
 	PodcastTask podTask = null;
 	
@@ -56,6 +61,10 @@ public class Podcasts extends Activity {
 	}
 
 	private void initList() {
+		if(data == null) {
+			showDialog(DIALOG_ERROR);
+			return;
+		}
 		ListView list = (ListView)Podcasts.this.findViewById(R.id.listView);
 		PodcastAdapter adapter = new PodcastAdapter(this, data);
 		list.setAdapter(adapter);
@@ -83,6 +92,29 @@ public class Podcasts extends Activity {
 		});
 	}
 	
+	@Override
+	protected Dialog onCreateDialog(int id, Bundle args) {
+		Dialog dialog;
+		switch(id) {
+		case DIALOG_ERROR :
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("No podcasts available.")
+				   .setCancelable(false)
+				   .setPositiveButton("Ok", new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Podcasts.this.finish();
+					}
+				});
+			dialog = builder.create();
+			break;
+		default :
+			dialog = null;
+			break;
+		}
+		return dialog;
+	}
+
 	@Override
 	public Object onRetainNonConfigurationInstance() {
 		if(podTask.getStatus() != AsyncTask.Status.FINISHED) {

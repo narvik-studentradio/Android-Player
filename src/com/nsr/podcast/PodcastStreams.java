@@ -16,8 +16,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -30,6 +34,8 @@ import com.nsr.R;
 public class PodcastStreams extends Activity {
 	/** description, text, url. */
 	public static final String INTENT_KEY_STREAM_INFO = "com.nsr.podcast.StreamData";
+	
+	public static final int DIALOG_ERROR = 0;
 	
 	private ArrayList<PodcastStreamInfo> podcasts;
 	PodcastStreamTask podTask = null;
@@ -53,24 +59,51 @@ public class PodcastStreams extends Activity {
 	}
 	
 	private void initList() {
-			ListView list = (ListView)PodcastStreams.this.findViewById(R.id.listViewPodcasts);
-			PodcastStreamAdapter adapter = new PodcastStreamAdapter(PodcastStreams.this, podcasts);
-			list.setAdapter(adapter);
-			
-			list.setOnItemClickListener(new OnItemClickListener() {
+		if(podcasts == null) {
+			showDialog(DIALOG_ERROR);
+			return;
+		}
+		ListView list = (ListView)PodcastStreams.this.findViewById(R.id.listViewPodcasts);
+		PodcastStreamAdapter adapter = new PodcastStreamAdapter(PodcastStreams.this, podcasts);
+		list.setAdapter(adapter);
+		
+		list.setOnItemClickListener(new OnItemClickListener() {
 
-				@Override
-				public void onItemClick(AdapterView<?> parent, View view,
-						int position, long id) {
-					PodcastStreamInfo stream = ((PodcastStreamItem)view).getStreamData();
-					Intent intent = new Intent(PodcastStreams.this, Podcasts.class);
-					String[] streamInfo = {stream.description, stream.text, stream.url};
-					intent.putExtra(INTENT_KEY_STREAM_INFO, streamInfo);
-					startActivity(intent);
-				}
-			});
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				PodcastStreamInfo stream = ((PodcastStreamItem)view).getStreamData();
+				Intent intent = new Intent(PodcastStreams.this, Podcasts.class);
+				String[] streamInfo = {stream.description, stream.text, stream.url};
+				intent.putExtra(INTENT_KEY_STREAM_INFO, streamInfo);
+				startActivity(intent);
+			}
+		});
 	}
 	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog;
+		switch(id) {
+		case DIALOG_ERROR :
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("No podcasts available.")
+				   .setCancelable(false)
+				   .setPositiveButton("Ok", new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						PodcastStreams.this.finish();
+					}
+				});
+			dialog = builder.create();
+			break;
+		default :
+			dialog = null;
+			break;
+		}
+		return dialog;
+	}
+
 	@Override
 	public Object onRetainNonConfigurationInstance() {
 		if(podTask != null && podTask.getStatus() != AsyncTask.Status.FINISHED)
@@ -82,7 +115,7 @@ public class PodcastStreams extends Activity {
 		return podcasts;
 	}
 	
-	private class PodcastStreamTask extends AsyncTask<Void, String, String[]> {
+	private class PodcastStreamTask extends AsyncTask<Void, String, ArrayList<PodcastStreamInfo>> {
 		ProgressDialog pd;
 		
 		@Override
@@ -97,10 +130,9 @@ public class PodcastStreams extends Activity {
 		}
 
 		@Override
-		protected String[] doInBackground(Void... arg0) {
+		protected ArrayList<PodcastStreamInfo> doInBackground(Void... arg0) {
 			try {
 	    		URL url = new URL("http://nsr.samfunnet.no/podcasts.opml");
-	    		
 				HttpURLConnection httpConnection = (HttpURLConnection)url.openConnection();
 				
 				if(httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -110,10 +142,11 @@ public class PodcastStreams extends Activity {
 					Element docElement = doc.getDocumentElement();
 					
 					publishProgress("Parsing data");
+					ArrayList<PodcastStreamInfo> streams = new ArrayList<PodcastStreamInfo>();
 					
 					Element body = (Element)docElement.getElementsByTagName("body").item(0);
 					NodeList outlines = body.getElementsByTagName("outline");
-					for(int i=0; i<1; i++) {//outlines.getLength(); i++) {
+					for(int i=0; i<1; i++) {
 						Element outline = (Element) outlines.item(i);
 						
 						NodeList subOutlines = outline.getElementsByTagName("outline");
@@ -129,12 +162,10 @@ public class PodcastStreams extends Activity {
 							thisStream.description = subDesc;
 							thisStream.url = subUrl;
 							
-							podcasts.add(thisStream);
+							streams.add(thisStream);
 						}
-						int j=0;
-						j++;
 					}
-					return new String[]{};
+					return streams;
 				}
 			} catch (DOMException e) {
 				e.printStackTrace();
@@ -145,13 +176,12 @@ public class PodcastStreams extends Activity {
 			} catch (ParserConfigurationException e) {
 				e.printStackTrace();
 			}
-			return new String[]{""};
-			
-			
+			return null;
 		}
 		
 		@Override
-		protected void onPostExecute(String[] result) {
+		protected void onPostExecute(ArrayList<PodcastStreamInfo> result) {
+			podcasts = result;
 			initList();
 			pd.dismiss();
 		}
