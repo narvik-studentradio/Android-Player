@@ -4,7 +4,7 @@
   android:orientation="horizontal"
   android:layout_width="match_parent"
   android:layout_height="match_parent" 
-  android:background="@drawable/widget_bg_1x4_watermarked"
+  android:background="@drawable/appwidget_dark_bg"
   android:paddingLeft="17px"
   android:paddingRight="17px"
   android:paddingTop="23px"
