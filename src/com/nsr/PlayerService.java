@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.IBinder;
 import android.widget.RemoteViews;
@@ -32,12 +33,20 @@ public class PlayerService extends Service {
 		return instance.metadataTracker.getHistory();
 	}
 	public static final int NOTIFICATION = 33462;
+	//Intent commands
 	public static final String INTENT_COMMAND = "com.nsr.playerservice.intent_command";
+	public static final String INTENT_CALLBACK = "com.nsr.playerservice.intent_callback";
+	//Callback keys
 	public static final String KEY_COMMAND = "command";
+	public static final String KEY_MESSAGE = "service_message";
+	//Command keys
 	public static final String COMMAND_REQUEST_METADATA = "request_metadata";
 	public static final String COMMAND_STOP_PLAYER = "stop_player";
-	public static final String INTENT_CALLBACK = "com.nsr.playerservice.intent_callback";
-	public static final String KEY_MESSAGE = "service_message";
+	//Service message keys
+	public static final String MESSAGE_PLAYER_STARTED = "player_started";
+	public static final String MESSAGE_METADATA_UPDATE = "metadata_update";
+	public static final String MESSAGE_ERROR = "error";
+	//Metadata keys
 	public static final String KEY_METADATA_TITLE = "metadata_title";
 	public static final String KEY_METADATA_ARTIST = "metadata_artist";
 	public static final String KEY_METADATA_ALBUM = "metadata_album";
@@ -45,9 +54,7 @@ public class PlayerService extends Service {
 	public static final String KEY_METADATA_REMAINING = "metadata_remaining";
 	public static final String KEY_METADATA_TYPE = "metadata_type";
 	public static final String KEY_METADATA_TIMESTAMP = "metadata_timestamp";
-	public static final String MESSAGE_PLAYER_STARTED = "player_started";
-	public static final String MESSAGE_METADATA_UPDATE = "metadata_update";
-	public static final String MESSAGE_ERROR = "error";
+	//Error keys
 	public static final String ERROR_OFFLINE = "error_offline";
 	
 	@Override
@@ -60,16 +67,10 @@ public class PlayerService extends Service {
 	}
 	
 	private void startPlayer() {
-		if(mediaPlayer != null) {/*
-			setWidgetStarted();
-			if(metadata == null) {
-				MetadataTask metaTask = new MetadataTask();
-				metaTask.execute((Void)null);
-			}
-			else {
-				sendMessage(MESSAGE_METADATA_UPDATE, metadata.artist, metadata.title, metadata.url);
-			}*/
-			return;
+		if(mediaPlayer != null) {
+			if(mediaPlayer.isPlaying())
+				return;
+			mediaPlayer.release();
 		}
 		try {
 			mediaPlayer = new MediaPlayer();
@@ -81,29 +82,39 @@ public class PlayerService extends Service {
 				public void onPrepared(MediaPlayer mp) {
 					mp.start();
 					sendMessage(MESSAGE_PLAYER_STARTED);
+					
+					Intent playerIntent = new Intent(getApplicationContext(), Player.class);
+					playerIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+					Notification serviceNotification = new Notification(R.drawable.nsr3, "Service running", 5000);
+					PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, playerIntent, 0);
+					serviceNotification.setLatestEventInfo(getApplicationContext(), "NSR", "NSR spiller nå", pi);
+					startForeground(NOTIFICATION, serviceNotification);
+
+					if(metadataTracker == null) {
+						metadataTracker = new MetadataTracker(new Runnable() {
+							@Override
+							public void run() {
+								sendMetadata();
+							}
+						});
+					}
+					setWidgetStarted();
+				}
+			});
+			mediaPlayer.setOnErrorListener(new OnErrorListener() {
+				@Override
+				public boolean onError(MediaPlayer mp, int what, int extra) {
+					sendMessage(MESSAGE_ERROR);
+					return true;
 				}
 			});
 			mediaPlayer.prepareAsync();
 			
-			Intent playerIntent = new Intent(getApplicationContext(), Player.class);
-			playerIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT|Intent.FLAG_ACTIVITY_SINGLE_TOP);
-			Notification serviceNotification = new Notification(R.drawable.nsr3, "Service running", 5000);
-			PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, playerIntent, 0);
-			serviceNotification.setLatestEventInfo(getApplicationContext(), "NSR", "NSR spiller nå", pi);
-			startForeground(NOTIFICATION, serviceNotification);
-			
 		} catch (IOException e) {
 			e.printStackTrace();
+			sendMessage(MESSAGE_ERROR);
+			return;
 		}
-		if(metadataTracker == null) {
-			metadataTracker = new MetadataTracker(new Runnable() {
-				@Override
-				public void run() {
-					sendMetadata();
-				}
-			});
-		}
-		setWidgetStarted();
 	}
 	
 	private void sendRemoteViews(RemoteViews rv) {
@@ -133,10 +144,7 @@ public class PlayerService extends Service {
         rv.setTextViewText(R.id.widgetTextViewArtist, "NSR Widget");
         rv.setTextViewText(R.id.widgetTextViewTitle, "");
         
-        sendRemoteViews(rv);/*
-        
-        Intent testIntent = new Intent("android.appwidget.action.APPWIDGET_UPDATE");
-        sendBroadcast(testIntent);*/
+        sendRemoteViews(rv);
 	}
 	
 	private void sendMessage(String type, String... message) {
