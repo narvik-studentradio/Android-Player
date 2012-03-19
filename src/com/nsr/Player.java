@@ -105,6 +105,9 @@ public class Player extends Activity implements OnClickListener {
 
 	@Override
 	protected void onResume() {
+        Intent mdReq = new Intent(PlayerService.INTENT_COMMAND);
+        mdReq.putExtra(PlayerService.KEY_COMMAND, PlayerService.COMMAND_REQUEST_METADATA);
+    	sendBroadcast(mdReq);
 		if(receiver == null)
 			receiver = new PlayerReceiver();
 		IntentFilter filter = new IntentFilter(PlayerService.INTENT_CALLBACK);
