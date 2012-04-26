@@ -24,6 +24,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -38,14 +39,16 @@ import com.nsr.R;
 
 public class Podcasts extends Activity {
 	private static final int DIALOG_ERROR = 0;
+	private Resources resources;
 	private ArrayList<PodcastData> data;
-	PodcastTask podTask = null;
+	private PodcastTask podTask = null;
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.podcast_view);
+		resources = getResources();
 		
 		Object retained = getLastNonConfigurationInstance();
 		if(retained == null) {
@@ -81,7 +84,7 @@ public class Podcasts extends Activity {
 				
 				DownloadManager mgr = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
 				DownloadManager.Request req = new DownloadManager.Request(uri);
-				req.setTitle("NSR download");
+				req.setTitle(resources.getString(R.string.podcasts_downloadmanager_title));
 				req.setDescription(item.getData().description);
 				req.setDestinationInExternalPublicDir(Environment.DIRECTORY_PODCASTS, item.getData().url.substring(item.getData().url.lastIndexOf("/")));
 				mgr.enqueue(req);
@@ -98,9 +101,9 @@ public class Podcasts extends Activity {
 		switch(id) {
 		case DIALOG_ERROR :
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("No podcasts available.")
+			builder.setMessage(resources.getString(R.string.podcasts_empty))
 				   .setCancelable(false)
-				   .setPositiveButton("Ok", new OnClickListener() {
+				   .setPositiveButton(resources.getString(R.string.generic_ok), new OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						Podcasts.this.finish();
@@ -131,7 +134,8 @@ public class Podcasts extends Activity {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			pd = ProgressDialog.show(Podcasts.this, "Please wait", "Downloading podcast list", true, false);
+			pd = ProgressDialog.show(Podcasts.this, resources.getString(R.string.generic_wait),
+					resources.getString(R.string.podcasts_downloading), true, false);
 		}
 
 		@Override
@@ -151,7 +155,7 @@ public class Podcasts extends Activity {
 					Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(in);
 					Element docElement = doc.getDocumentElement();
 					
-					publishProgress("Parsing data");
+					publishProgress(resources.getString(R.string.podcasts_parsing));
 					
 					NodeList outlines = docElement.getElementsByTagName("item");
 					
@@ -162,7 +166,11 @@ public class Podcasts extends Activity {
 						
 						String eleTitle = ele.getElementsByTagName("title").item(0).getFirstChild().getNodeValue();
 						Element enclosure = (Element)ele.getElementsByTagName("enclosure").item(0);
+						if(enclosure == null)
+							continue;
 						String eleUrl = enclosure.getAttribute("url");
+						if(eleUrl.equals(""))
+							continue;
 						String eleDate = ele.getElementsByTagName("pubDate").item(0).getFirstChild().getNodeValue();
 						
 						PodcastData thisCast = new PodcastData();

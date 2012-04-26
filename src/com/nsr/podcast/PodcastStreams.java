@@ -22,6 +22,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -34,17 +35,18 @@ import com.nsr.R;
 public class PodcastStreams extends Activity {
 	/** description, text, url. */
 	public static final String INTENT_KEY_STREAM_INFO = "com.nsr.podcast.StreamData";
-	
 	public static final int DIALOG_ERROR = 0;
 	
 	private ArrayList<PodcastStreamInfo> podcasts;
-	PodcastStreamTask podTask = null;
+	private Resources resources;
+	private PodcastStreamTask podTask = null;
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.podcast_stream_view);
+		resources = getResources();
 		
 		Object last = getLastNonConfigurationInstance();
 		if(last == null) {
@@ -87,9 +89,9 @@ public class PodcastStreams extends Activity {
 		switch(id) {
 		case DIALOG_ERROR :
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("No podcasts available.")
+			builder.setMessage(resources.getString(R.string.podcasts_empty))
 				   .setCancelable(false)
-				   .setPositiveButton("Ok", new OnClickListener() {
+				   .setPositiveButton(resources.getString(R.string.generic_ok), new OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						PodcastStreams.this.finish();
@@ -121,7 +123,8 @@ public class PodcastStreams extends Activity {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			pd = ProgressDialog.show(PodcastStreams.this, "Please wait", "Downloading podcast lists", true, false);
+			pd = ProgressDialog.show(PodcastStreams.this, resources.getString(R.string.generic_wait),
+					resources.getString(R.string.podcasts_streams_downloading), true, false);
 		}
 
 		@Override
@@ -132,7 +135,7 @@ public class PodcastStreams extends Activity {
 		@Override
 		protected ArrayList<PodcastStreamInfo> doInBackground(Void... arg0) {
 			try {
-	    		URL url = new URL("http://nsr.samfunnet.no/podcasts.opml");
+	    		URL url = new URL(resources.getString(R.string.settings_podcast_opml));
 				HttpURLConnection httpConnection = (HttpURLConnection)url.openConnection();
 				
 				if(httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -141,7 +144,7 @@ public class PodcastStreams extends Activity {
 					Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(in);
 					Element docElement = doc.getDocumentElement();
 					
-					publishProgress("Parsing data");
+					publishProgress(resources.getString(R.string.podcasts_parsing));
 					ArrayList<PodcastStreamInfo> streams = new ArrayList<PodcastStreamInfo>();
 					
 					Element body = (Element)docElement.getElementsByTagName("body").item(0);
