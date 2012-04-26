@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">NSR Player</string>
-    <string name="settings_podcast_opml">http://nsr.samfunnet.no/podcasts.opml</string><string name="generic_ok">OK</string><string name="generic_wait">Please wait</string><string name="notification_ticker">NSR now playing</string>
+    <string name="settings_podcast_opml">http://nsr.samfunnet.no/podcasts.opml</string><string name="player_button_play">Start</string><string name="player_button_stop">Stop</string><string name="player_button_podcasts">Podcasts</string><string name="player_button_history">History</string><string name="generic_ok">OK</string><string name="generic_wait">Please wait</string><string name="notification_ticker">NSR now playing</string>
     <string name="notification_title">NSR</string>
     <string name="notification_text">NSR now playing</string>
     <string name="podcasts_parsing">Parsing data</string>
@@ -12,5 +12,10 @@
     <string name="podcasts_downloadmanager_title">Downloading NSR podcast</string>
     <string name="podcasts_streams_downloading">Downloading podcast lists</string>
     <string name="history_empty">No history available</string>
+    
+    
+    
+    
+    
     
 </resources>

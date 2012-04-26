@@ -36,21 +36,6 @@ public class Player extends Activity implements OnClickListener {
         txtArtist = (TextView)findViewById(R.id.appTxtArtist);
         txtTitle = (TextView)findViewById(R.id.appTxtTitle);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
-        progressTimer = new Timer("progress_timer");
-        progressTimer.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				if(PlayerService.getInstance() != null)
-					progressBar.post(new Runnable() {
-						@Override
-						public void run() {
-							updateProgress();
-						}
-					});
-			}
-		}, 1000, 1000);
-        
-        updateProgress();
     }
     
     private void updateProgress() {
@@ -100,6 +85,12 @@ public class Player extends Activity implements OnClickListener {
 	protected void onPause() {
     	if(receiver != null)
     		unregisterReceiver(receiver);
+    	
+		progressTimer.cancel();
+		progressBar.setProgress(0);
+		txtArtist.setText("");
+		txtTitle.setText("");
+		
 		super.onPause();
 	}
 
@@ -112,23 +103,24 @@ public class Player extends Activity implements OnClickListener {
 			receiver = new PlayerReceiver();
 		IntentFilter filter = new IntentFilter(PlayerService.INTENT_CALLBACK);
 		registerReceiver(receiver, filter);
+
+        progressTimer = new Timer("progress_timer");
+        progressTimer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				if(PlayerService.getInstance() != null)
+					progressBar.post(new Runnable() {
+						@Override
+						public void run() {
+							updateProgress();
+						}
+					});
+			}
+		}, 1000, 1000);
+        updateProgress();
+        
 		super.onResume();
 	}
-
-	@Override
-	protected void onDestroy() {
-		progressTimer.cancel();
-		super.onDestroy();
-	}
-    /*
-    @Override
-	public Object onRetainNonConfigurationInstance() {
-    	if(txtArtist==null || txtTitle==null)
-    		return null;
-    	String[] data = {(String) txtArtist.getText(), (String) txtTitle.getText(),
-    			Integer.toString(progressBar.getMax()), Integer.toString(progressBar.getProgress())};
-    	return data;
-	}*/
 
 	private class PlayerReceiver extends BroadcastReceiver {
 		@Override

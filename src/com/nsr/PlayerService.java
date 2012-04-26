@@ -27,6 +27,7 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 	private WidgetCommReceiver wcr = new WidgetCommReceiver();
 	private NotificationManager notificationManager;
 	private Resources resources;
+	private boolean stopSpam = false; //TODO: Really ugly hack!
 	
 	private static PlayerService instance;
 	public static PlayerService getInstance() {
@@ -197,7 +198,46 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		startPlayer();
+		if(stopSpam)
+			return START_STICKY;
+		stopSpam = true;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					return;
+				}
+				stopSpam = false;
+			}
+		}).start();
+		
+		if(mediaPlayer != null && mediaPlayer.isPlaying())
+			return START_STICKY;
+		
+		AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		if(audioManager.requestAudioFocus(new AudioManager.OnAudioFocusChangeListener() {
+			@Override
+			public void onAudioFocusChange(int focusChange) {
+				switch(focusChange) {
+				case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+				case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+					mediaPlayer.stop();
+					break;
+				case AudioManager.AUDIOFOCUS_GAIN:
+					startPlayer();
+					break;
+				case AudioManager.AUDIOFOCUS_LOSS:
+				default:
+					stopSelf();
+					break;
+				}
+			}
+		}, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN) != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+			stopSelf();
+		else
+			startPlayer();
 		return START_STICKY;
 	}
 	
@@ -205,9 +245,11 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 	public void onDestroy() {
 		unregisterReceiver(wcr);
 		setWidgetStopped();
-		mediaPlayer.release();
+		if(mediaPlayer != null)
+			mediaPlayer.release();
 		instance = null;
-		metadataTracker.close();
+		if(metadataTracker != null)
+			metadataTracker.close();
 		super.onDestroy();
 	}
 

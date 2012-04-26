@@ -1,40 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent" android:orientation="vertical">
-    <TableLayout android:layout_height="wrap_content"
-    			 android:layout_width="match_parent"
-    			 android:id="@+id/tableLayout1"
-    			 >
-        <TableRow android:id="@+id/tableRow1"
-        		  android:layout_width="match_parent"
-        		  android:layout_height="wrap_content">
-            <TextView android:layout_width="wrap_content"
-            		  android:id="@+id/songTxtArtist"
-            		  android:text="Artist"
-            		  android:layout_height="wrap_content"
-            		  />
-            <TextView android:text=" - "
-            		  android:layout_width="wrap_content"
-            		  android:layout_height="wrap_content"
-					  />
-            <TextView android:layout_width="wrap_content"
-            		  android:id="@+id/songTxtTitle"
-            		  android:text="Title" 
-            		  android:layout_height="wrap_content"
-            		  />
-        </TableRow>
-	    <TableRow android:layout_height="wrap_content"
-	    		  android:layout_width="match_parent"
-	    		  android:id="@+id/tableRow2"
-	    		  >
-	        <TextView android:text="Album"
-	        		  android:id="@+id/songTxtAlbum"
-	        		  android:layout_width="wrap_content"
-	        		  android:layout_height="wrap_content"
-	        		  android:layout_span="3"
-	        		  />
-	    </TableRow>
-    </TableLayout>
-</LinearLayout>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ 			 android:layout_width="match_parent"
+  			 android:layout_height="match_parent"
+  			 android:orientation="vertical"
+    		 android:id="@+id/tableLayout1"
+    		 >
+    <TableRow android:id="@+id/tableRow1"
+    		  android:layout_width="match_parent"
+    		  android:layout_height="wrap_content">
+        <TextView android:layout_width="wrap_content"
+        		  android:id="@+id/songTxtArtist"
+        		  android:layout_height="wrap_content"
+        		  />
+        <TextView android:text=" - "
+        		  android:layout_width="wrap_content"
+        		  android:layout_height="wrap_content"
+	  			  />
+		<TextView android:layout_width="wrap_content"
+        		  android:id="@+id/songTxtTitle"
+        		  android:layout_height="wrap_content"
+        		  />
+	</TableRow>
+	<TableRow android:layout_height="wrap_content"
+	 		  android:layout_width="match_parent"
+	 		  android:id="@+id/tableRow2"
+	 		  >
+	    <TextView android:id="@+id/songTxtAlbum"
+	     		  android:layout_width="wrap_content"
+	     		  android:layout_height="wrap_content"
+	     		  android:layout_span="3"
+	     		  />
+	 </TableRow>
+</TableLayout>
