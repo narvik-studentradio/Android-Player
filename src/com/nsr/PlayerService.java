@@ -22,6 +22,7 @@ import android.widget.RemoteViews;
 public class PlayerService extends Service {
 	private MediaPlayer mediaPlayer;
 	private MetadataTracker metadataTracker;
+	WidgetCommReceiver wcr = new WidgetCommReceiver();
 	
 	private static PlayerService instance;
 	public static PlayerService getInstance() {
@@ -61,7 +62,6 @@ public class PlayerService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		instance = this;
-		WidgetCommReceiver wcr = new WidgetCommReceiver();
 		IntentFilter callbackFilter = new IntentFilter(INTENT_COMMAND);
 		registerReceiver(wcr, callbackFilter);
 	}
@@ -208,6 +208,7 @@ public class PlayerService extends Service {
 	
 	@Override
 	public void onDestroy() {
+		unregisterReceiver(wcr);
 		setWidgetStopped();
 		mediaPlayer.release();
 		instance = null;
