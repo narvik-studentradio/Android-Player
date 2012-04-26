@@ -11,5 +11,6 @@
     
     <string name="podcasts_downloadmanager_title">Downloading NSR podcast</string>
     <string name="podcasts_streams_downloading">Downloading podcast lists</string>
+    <string name="history_empty">No history available</string>
     
 </resources>
