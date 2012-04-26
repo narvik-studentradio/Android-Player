@@ -170,7 +170,7 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 	private Notification prepareNotification() {
 		Intent playerIntent = new Intent(getApplicationContext(), Player.class);
 		playerIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT|Intent.FLAG_ACTIVITY_SINGLE_TOP);
-		Notification serviceNotification = new Notification(R.drawable.nsr3, resources.getString(R.string.notification_ticker), 5000);
+		Notification serviceNotification = new Notification(R.drawable.nsr3, resources.getString(R.string.notification_ticker), 0);
 		PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, playerIntent, 0);
 		String notificationText;
 		if(metadataTracker != null && metadataTracker.getPlaying() != null)
