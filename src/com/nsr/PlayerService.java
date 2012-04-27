@@ -16,17 +16,19 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.IBinder;
 import android.widget.RemoteViews;
 
-public class PlayerService extends Service implements OnPreparedListener, OnErrorListener {
+public class PlayerService extends Service implements OnPreparedListener, OnErrorListener, OnCompletionListener {
 	private MediaPlayer mediaPlayer;
 	private MetadataTracker metadataTracker;
 	private WidgetCommReceiver wcr = new WidgetCommReceiver();
 	private NotificationManager notificationManager;
 	private Resources resources;
+	private boolean error = false;
 	private boolean stopSpam = false; //TODO: Really ugly hack!
 	
 	private static PlayerService instance;
@@ -53,6 +55,7 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 	public static final String MESSAGE_PLAYER_STARTED = "player_started";
 	public static final String MESSAGE_METADATA_UPDATE = "metadata_update";
 	public static final String MESSAGE_ERROR = "error";
+	public static final String MESSAGE_STARTING = "starting";
 	//Metadata keys
 	public static final String KEY_METADATA_TITLE = "metadata_title";
 	public static final String KEY_METADATA_ARTIST = "metadata_artist";
@@ -82,16 +85,18 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 		}
 		try {
 			mediaPlayer = new MediaPlayer();
-			String url = "http://stream.sysrq.no:8000/01-nsr-mobile.mp3";
+			String url = "http://stream.sysrq.no:8000/00-nsr.mp3";//"http://stream.sysrq.no:8000/01-nsr-mobile.mp3";
 			mediaPlayer.setDataSource(url);
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaPlayer.setOnPreparedListener(this);
 			mediaPlayer.setOnErrorListener(this);
+			mediaPlayer.setOnCompletionListener(this);
 			mediaPlayer.prepareAsync();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 			sendMessage(MESSAGE_ERROR);
+			setWidgetError();
 			return;
 		}
 	}
@@ -103,6 +108,16 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 		awm.updateAppWidget(ids, rv);
 	}
 	
+	private void setWidgetStarting() {
+		RemoteViews rv = new RemoteViews(getPackageName(), R.layout.widget_layout);
+        rv.setOnClickPendingIntent(R.id.widgetImageView, PendingIntent.getService(this, 0, new Intent(), 0));
+        rv.setImageViewResource(R.id.widgetImageView, R.drawable.nsr_widget_green);
+        rv.setTextViewText(R.id.widgetTextViewArtist, "Every day I'm bufferin");
+        rv.setTextViewText(R.id.widgetTextViewTitle, "");
+        
+        sendRemoteViews(rv);
+	}
+	
 	private void setWidgetStarted() {
 		RemoteViews rv = new RemoteViews(getPackageName(), R.layout.widget_layout);
         Intent intent = new Intent(INTENT_COMMAND);
@@ -110,6 +125,8 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
         rv.setOnClickPendingIntent(R.id.widgetImageView, pendingIntent);
         rv.setImageViewResource(R.id.widgetImageView, R.drawable.nsr_widget_pause);
+        rv.setTextViewText(R.id.widgetTextViewArtist, "Playing");
+        rv.setTextViewText(R.id.widgetTextViewTitle, "");
 		
         sendRemoteViews(rv);
 	}
@@ -126,9 +143,22 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
         sendRemoteViews(rv);
 	}
 	
+	private void setWidgetError() {
+		RemoteViews rv = new RemoteViews(getPackageName(), R.layout.widget_layout);
+        Intent intent = new Intent(this, PlayerService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
+        rv.setOnClickPendingIntent(R.id.widgetImageView, pendingIntent);
+        rv.setImageViewResource(R.id.widgetImageView, R.drawable.nsr_widget_red);
+        rv.setTextViewText(R.id.widgetTextViewArtist, "Error");
+        rv.setTextViewText(R.id.widgetTextViewTitle, "");
+        
+        sendRemoteViews(rv);
+	}
+	
 	private void sendMessage(String type, String... message) {
 		Intent messageIntent = new Intent(INTENT_CALLBACK);
 		messageIntent.putExtra(KEY_MESSAGE, type);
+		
 		if(type.equals(MESSAGE_METADATA_UPDATE) && message.length >= 7) {
 			messageIntent.putExtra(KEY_METADATA_ARTIST, message[0]);
 			messageIntent.putExtra(KEY_METADATA_TITLE, message[1]);
@@ -137,15 +167,14 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 			messageIntent.putExtra(KEY_METADATA_REMAINING, message[4]);
 			messageIntent.putExtra(KEY_METADATA_TYPE, message[5]);
 			messageIntent.putExtra(KEY_METADATA_TIMESTAMP, message[6]);
-		}
-		sendBroadcast(messageIntent);
-		
-		if(type.equals(MESSAGE_METADATA_UPDATE) && message.length >= 2) {
 			RemoteViews rm = new RemoteViews(getPackageName(), R.layout.widget_layout);
 			rm.setTextViewText(R.id.widgetTextViewArtist, message[0]);
 			rm.setTextViewText(R.id.widgetTextViewTitle, message[1]);
 			sendRemoteViews(rm);
 		}
+		sendBroadcast(messageIntent);
+		if(type.equals(MESSAGE_STARTING))
+			setWidgetStarting();
 	}
 	
 	private void sendMetadata() {
@@ -201,6 +230,8 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 		if(stopSpam)
 			return START_STICKY;
 		stopSpam = true;
+		sendMessage(MESSAGE_STARTING);
+		setWidgetStarting();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -244,7 +275,10 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 	@Override
 	public void onDestroy() {
 		unregisterReceiver(wcr);
-		setWidgetStopped();
+		if(error)
+			setWidgetError();
+		else
+			setWidgetStopped();
 		if(mediaPlayer != null)
 			mediaPlayer.release();
 		instance = null;
@@ -279,6 +313,14 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 		sendMessage(MESSAGE_ERROR);
+		error = true;
+		stopSelf();
 		return true;
+	}
+	@Override
+	public void onCompletion(MediaPlayer mp) {
+		sendMessage(MESSAGE_ERROR);
+		error = true;
+		stopSelf();
 	}
 }
