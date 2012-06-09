@@ -24,7 +24,7 @@ public class History extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.history_view);
+		setContentView(R.layout.list_view);
 		resources = getResources();
 		list = (ListView)findViewById(R.id.list);
 		updateReceiver = new UpdateReceiver();

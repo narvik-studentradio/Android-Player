@@ -7,28 +7,23 @@ import android.widget.TextView;
 
 import com.nsr.R;
 
-public class PodcastItem extends LinearLayout {
-	private PodcastData data;
+public class PodcastItem<T extends Displayable> extends LinearLayout {
+	private T data;
 	private TextView textViewTitle;
 	private TextView textViewText;
 
-	public PodcastItem(Context context, PodcastData data) {
+	public PodcastItem(Context context, T data) {
 		super(context);
 		this.data = data;
 		
 		LayoutInflater inf = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		inf.inflate(R.layout.podcast_item, this, true);
-/*
-		String infService = Context.LAYOUT_INFLATER_SERVICE;
-		LayoutInflater li;
-		li = (LayoutInflater)getContext().getSystemService(infService);
-		li.inflate(R.layout.podcast_stream_item, this, true);
-		*/
-		textViewTitle = (TextView)findViewById(R.id.textViewTtl);
-		textViewText = (TextView)findViewById(R.id.textViewTxt);
 		
-		textViewTitle.setText(data.date);
-		textViewText.setText(data.description);
+		textViewTitle = (TextView)findViewById(R.id.podcastItem_title);
+		textViewText = (TextView)findViewById(R.id.podcastItem_text);
+		
+		textViewTitle.setText(data.getTitle());
+		textViewText.setText(data.getText());
 	}
 
 	public void setTitle(String title) {
@@ -39,7 +34,7 @@ public class PodcastItem extends LinearLayout {
 		textViewText.setText(text);
 	}
 	
-	public PodcastData getData() {
+	public T getData() {
 		return data;
 	}
 }

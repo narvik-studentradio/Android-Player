@@ -45,7 +45,7 @@ public class PodcastStreams extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.podcast_stream_view);
+		setContentView(R.layout.list_view);
 		resources = getResources();
 		
 		Object last = getLastNonConfigurationInstance();
@@ -65,8 +65,8 @@ public class PodcastStreams extends Activity {
 			showDialog(DIALOG_ERROR);
 			return;
 		}
-		ListView list = (ListView)PodcastStreams.this.findViewById(R.id.listViewPodcasts);
-		PodcastStreamAdapter adapter = new PodcastStreamAdapter(PodcastStreams.this, podcasts);
+		ListView list = (ListView)PodcastStreams.this.findViewById(R.id.list);
+		PodcastAdapter adapter = new PodcastAdapter(PodcastStreams.this, podcasts);
 		list.setAdapter(adapter);
 		
 		list.setOnItemClickListener(new OnItemClickListener() {
@@ -74,7 +74,8 @@ public class PodcastStreams extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				PodcastStreamInfo stream = ((PodcastStreamItem)view).getStreamData();
+				@SuppressWarnings("unchecked")
+				PodcastStreamInfo stream = ((PodcastItem<PodcastStreamInfo>)view).getData();
 				Intent intent = new Intent(PodcastStreams.this, Podcasts.class);
 				String[] streamInfo = {stream.description, stream.text, stream.url};
 				intent.putExtra(INTENT_KEY_STREAM_INFO, streamInfo);

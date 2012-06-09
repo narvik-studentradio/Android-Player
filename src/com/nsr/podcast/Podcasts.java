@@ -47,7 +47,7 @@ public class Podcasts extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.podcast_view);
+		setContentView(R.layout.list_view);
 		resources = getResources();
 		
 		Object retained = getLastNonConfigurationInstance();
@@ -68,14 +68,15 @@ public class Podcasts extends Activity {
 			showDialog(DIALOG_ERROR);
 			return;
 		}
-		ListView list = (ListView)Podcasts.this.findViewById(R.id.listView);
+		ListView list = (ListView)Podcasts.this.findViewById(R.id.list);
 		PodcastAdapter adapter = new PodcastAdapter(this, data);
 		list.setAdapter(adapter);
 		list.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
-				PodcastItem item = (PodcastItem) view;
+				@SuppressWarnings("unchecked")
+				PodcastItem<PodcastData> item = (PodcastItem<PodcastData>) view;
 				
 				File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PODCASTS);
 				downloadDir.mkdirs();
