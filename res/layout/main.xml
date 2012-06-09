@@ -14,6 +14,7 @@
     		   android:layout_alignParentTop="true"
     		   android:layout_alignParentRight="true"
     		   android:layout_alignParentBottom="true"
+    		   android:contentDescription="@string/player_background_description"
     		   >
     </ImageView>
     <TableLayout android:layout_width="fill_parent"

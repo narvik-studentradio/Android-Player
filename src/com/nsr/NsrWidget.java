@@ -3,21 +3,12 @@ package com.nsr;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender.SendIntentException;
-import android.widget.Button;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 public class NsrWidget extends AppWidgetProvider{
-	//public static final String WIDGET_CALLBACK = "widget_callback";
-	//public static final String WIDGET_REQUEST_METADATA = "widget_request_metadata";
-	private static final String STARTUP_ACTIVITY = "startup_activity";
-
-
+	
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
