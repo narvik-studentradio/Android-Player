@@ -9,5 +9,7 @@
     <color name="Gold1">#7A7037</color><color name="Gold2">#6A6027</color><color name="Gold3">#5A5017</color>
     
     
+    <color name="textfield_gradient_1">#A0FFFFFF</color>
+    <color name="textfield_gradient_2">#A0606060</color>
     
 </resources>

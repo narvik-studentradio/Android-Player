@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="0dp"
+    android:gravity="fill_vertical" >
+    
+    <TableLayout android:layout_height="fill_parent"
+        	     android:layout_width="wrap_content"
+        	     android:orientation="vertical"
+        	     android:layout_alignParentRight="true"
+        	     android:layout_centerVertical="true"
+        	     android:id="@+id/table1"
+        	     >
+	    <Button android:id="@+id/buttonStart"
+	    		android:layout_height="wrap_content"
+	    		android:layout_width="wrap_content"
+	    		android:text="@string/player_button_play"
+	    		android:layout_weight="1"
+	    		android:layout_marginBottom="5dp"
+	    		android:background="@drawable/button_basic"
+	    		android:paddingLeft="30dp"
+	    		android:paddingRight="30dp"
+	    />
+	    <Button android:id="@+id/buttonStop" 
+			    android:layout_height="wrap_content" 
+			    android:layout_width="wrap_content" 
+			    android:text="@string/player_button_stop"
+			    android:layout_weight="1"
+			    android:layout_marginTop="5dp"
+	    		android:background="@drawable/button_basic"
+	    		android:paddingLeft="30dp"
+	    		android:paddingRight="30dp"
+		/>
+    </TableLayout>
+
+    <ImageView android:id="@+id/imageViewLargeIcon" 
+    		   android:layout_width="wrap_content" 
+    		   android:layout_height="wrap_content" 
+    		   android:src="@drawable/nsr_icon_large" 
+    		   android:layout_alignParentLeft="true"
+    		   android:layout_alignParentTop="true"
+    		   android:layout_toLeftOf="@id/table1"
+    		   android:layout_alignParentBottom="true"
+    		   android:contentDescription="@string/player_background_description"
+    		   >
+    </ImageView>
+    
+    <TableLayout android:layout_height="wrap_content"
+        		 android:layout_width="wrap_content"
+        		 android:layout_alignParentLeft="true"
+        		 android:layout_alignParentBottom="true"
+        		 android:layout_toLeftOf="@id/table1"
+        		 android:layout_marginRight="5dp"
+        		 >
+		<TextView android:id="@+id/appTxtArtist" 
+  				  android:layout_width="fill_parent"
+  				  android:layout_height="wrap_content"
+  				  android:background="@drawable/textfield_basic"
+  				  android:layout_marginBottom="10dp"
+ 				  android:textColor="#000"
+  				  
+   				  />
+		<TextView android:id="@+id/appTxtTitle" 
+				  android:layout_width="fill_parent"
+				  android:layout_height="wrap_content"
+  				  android:background="@drawable/textfield_basic"
+  				  android:layout_marginBottom="10dp"
+ 				  android:textColor="#000"
+				  />
+		<ProgressBar android:id="@+id/progressBar"
+		 	 		 android:layout_width="fill_parent"
+			 		 android:layout_height="40dp"
+					 style="@android:style/Widget.ProgressBar.Horizontal"
+					 android:progressDrawable="@drawable/progress_basic"
+  				  	 android:layout_marginBottom="10dp"
+			 		 />
+		<TableRow >
+		    <Button android:id="@+id/buttonPodcast"
+		    		android:layout_height="wrap_content"
+		    		android:layout_width="wrap_content"
+		    		android:text="@string/player_button_podcasts"
+		    		android:layout_weight="1"
+	    			android:background="@drawable/button_basic"
+	    			android:layout_marginRight="5dp"
+		 			/>
+		    <Button	android:layout_height="wrap_content"
+		    		android:layout_width="wrap_content"
+		    		android:id="@+id/buttonHistory"
+		    		android:text="@string/player_button_history"
+		    		android:layout_weight="1"
+	    			android:background="@drawable/button_basic"
+	    			android:layout_marginLeft="5dp"
+		 			/>
+	    </TableRow>
+	</TableLayout>
+</RelativeLayout>
