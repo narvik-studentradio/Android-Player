@@ -4,31 +4,65 @@
   			 android:layout_height="match_parent"
   			 android:orientation="vertical"
     		 android:id="@+id/tableLayout1"
+    		 android:background="@drawable/history_item_background"
+    		 android:layout_marginTop="5dp"
+    		 android:layout_marginBottom="5dp"
     		 >
     <TableRow android:id="@+id/tableRow1"
     		  android:layout_width="match_parent"
-    		  android:layout_height="wrap_content">
-        <TextView android:layout_width="wrap_content"
+    		  android:layout_height="wrap_content"
+    		  >
+   		<TextView android:layout_width="fill_parent"
+   		    	  android:layout_height="fill_parent"
+   		    	  android:background="#4F00"
+   		    	  android:text="@string/history_artist"
+   		    	  android:paddingLeft="10dp"
+	     		  android:textColor="#000"
+	     		  android:paddingRight="5dp"
+   		    	  />
+        <TextView android:layout_width="fill_parent"
         		  android:id="@+id/songTxtArtist"
         		  android:layout_height="wrap_content"
-        		  />
-        <TextView android:text="@string/generic_separator"
-        		  android:layout_width="wrap_content"
-        		  android:layout_height="wrap_content"
-	  			  />
-		<TextView android:layout_width="wrap_content"
-        		  android:id="@+id/songTxtTitle"
-        		  android:layout_height="wrap_content"
+	     		  android:paddingLeft="5dp"
+	     		  android:textColor="#000"
         		  />
 	</TableRow>
 	<TableRow android:layout_height="wrap_content"
 	 		  android:layout_width="match_parent"
 	 		  android:id="@+id/tableRow2"
 	 		  >
+   		<TextView android:layout_width="fill_parent"
+   		    	  android:layout_height="fill_parent"
+   		    	  android:background="#40F0"
+   		    	  android:text="@string/history_title"
+   		    	  android:paddingLeft="10dp"
+	     		  android:textColor="#000"
+	     		  android:paddingRight="5dp"
+   		    	  />
+		<TextView android:layout_width="fill_parent"
+        		  android:id="@+id/songTxtTitle"
+        		  android:layout_height="wrap_content"
+	     		  android:paddingLeft="5dp"
+	     		  android:textColor="#000"
+        		  />
+	</TableRow>
+	<TableRow android:layout_height="wrap_content"
+	 		  android:layout_width="match_parent"
+	 		  android:id="@+id/tableRow3"
+	 		  >
+   		<TextView android:layout_width="fill_parent"
+   		    	  android:layout_height="fill_parent"
+   		    	  android:background="#400F"
+   		    	  android:text="@string/history_album"
+   		    	  android:paddingLeft="10dp"
+	     		  android:textColor="#000"
+	     		  android:paddingRight="5dp"
+   		    	  />
 	    <TextView android:id="@+id/songTxtAlbum"
-	     		  android:layout_width="wrap_content"
+	     		  android:layout_width="fill_parent"
 	     		  android:layout_height="wrap_content"
-	     		  android:layout_span="3"
+	     		  android:paddingLeft="5dp"
+	     		  android:textColor="#000"
 	     		  />
 	 </TableRow>
 </TableLayout>
