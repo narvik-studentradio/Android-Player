@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,30 +21,45 @@ import org.xml.sax.SAXException;
 
 import android.os.AsyncTask;
 
+/**
+ * Fetches and manages metadata from a URL.
+ * @author Christoffer
+ *
+ */
 public class MetadataTracker implements Closeable {
-	private static final String METADATA_URL = "http://nsr-mb.samfunnet.no/xml/metadata";
-	private Runnable updateCommand;
-	private List<SongData> history;
-	private Timer timer;
-	private boolean canceled = false;
+	private final String METADATA_URL;// = "http://nsr-mb.samfunnet.no/xml/metadata?tracks=20";
+	private final Runnable updateCommand;
+	private final List<SongData> history;
+	private final Timer timer;
+	private volatile boolean canceled = false;
+	private final int METADATA_DELAY = 125;
 
-	public MetadataTracker(Runnable updateCommand) {
+	public MetadataTracker(String url, Runnable updateCommand) {
+		this.METADATA_URL = url;
 		this.updateCommand = updateCommand;
-		history = Collections.synchronizedList(new ArrayList<SongData>());
+		history = new ArrayList<SongData>();
 		timer = new Timer();
 		fetchMetadata();
 	}
 	
+	/**
+	 * @return The most recent metadata.
+	 */
 	public SongData getPlaying() {
 		synchronized(history){
-			if(history == null || history.size() <= 0)
+			if(history.isEmpty())
 				return null;
 			return history.get(0);
 		}
 	}
 	
+	/**
+	 * @return The complete history stored in the tracker.
+	 */
 	public List<SongData> getHistory() {
-		return history;
+		synchronized(history) {
+			return new ArrayList<SongData>(history);
+		}
 	}
 	
 	private void fetchMetadata() {
@@ -56,9 +70,11 @@ public class MetadataTracker implements Closeable {
 	private void fetchCompleted(boolean result) {
 		if(canceled)
 			return;
+		
 		SongData lastPlayed = getPlaying();
 		if(lastPlayed == null)
 			return;
+		
 		int timeToNext = result ? lastPlayed.remaining * 1000 + 2000 : 10000;
 		timer.schedule(new TimerTask() {
 			@Override
@@ -66,15 +82,14 @@ public class MetadataTracker implements Closeable {
 				fetchMetadata();
 			}
 		}, timeToNext);
-		if(updateCommand != null)
-			updateCommand.run();
+		
+		updateCommand.run();
 	}
-
+	
 	@Override
 	public void close() {
 		canceled = true;
 		timer.cancel();
-		updateCommand = null;
 	}
 
 	private class MetadataTask extends AsyncTask<Void, Void, Boolean> {
@@ -95,32 +110,52 @@ public class MetadataTracker implements Closeable {
 					
 					if(metadata.getLength() <= 0)
 						return false;
-					else
-						history.clear();
 					
-					for(int i=0; i<metadata.getLength(); i++) {
-						Element ele = (Element) metadata.item(i);
+					synchronized(history) {
+						history.clear();
 						
-						String eleArtist = ele.getElementsByTagName("artist").item(0).getFirstChild().getNodeValue();
-						String eleTitle = ele.getElementsByTagName("title").item(0).getFirstChild().getNodeValue();
-						String eleAlbum = ele.getElementsByTagName("album").item(0).getFirstChild().getNodeValue();
-						String eleRemaining = ele.getElementsByTagName("remaining").item(0).getFirstChild().getNodeValue();
-						String eleDuration = ele.getElementsByTagName("duration").item(0).getFirstChild().getNodeValue();
-						String eleType = ele.getElementsByTagName("type").item(0).getFirstChild().getNodeValue();
-						
-						int remaining;
-						try{
-							remaining = Integer.parseInt(eleRemaining);
-						}catch(NumberFormatException e){remaining = 200;}
-						int duration;
-						try{
-							duration = Integer.parseInt(eleDuration);
-						}catch(NumberFormatException e){duration = 200;}
-						
-						SongData song = new SongData(eleArtist, eleTitle, eleAlbum, duration, remaining, eleType, System.currentTimeMillis());
-						history.add(song);
+						for(int i=0; i<metadata.getLength(); i++) {
+							Element ele = (Element) metadata.item(i);
+							
+							String eleArtist = ele.getElementsByTagName("artist").item(0).getFirstChild().getNodeValue();
+							String eleTitle = ele.getElementsByTagName("title").item(0).getFirstChild().getNodeValue();
+							String eleAlbum = ele.getElementsByTagName("album").item(0).getFirstChild().getNodeValue();
+							String eleRemaining = ele.getElementsByTagName("remaining").item(0).getFirstChild().getNodeValue();
+							String eleDuration = ele.getElementsByTagName("duration").item(0).getFirstChild().getNodeValue();
+							String eleType = ele.getElementsByTagName("type").item(0).getFirstChild().getNodeValue();
+							
+							int remaining;
+							try{
+								remaining = Integer.parseInt(eleRemaining);
+							}catch(NumberFormatException e){remaining = 200;}
+							int duration;
+							try{
+								duration = Integer.parseInt(eleDuration);
+							}catch(NumberFormatException e){duration = 200;}
+							
+							SongData song = new SongData(eleArtist, eleTitle, eleAlbum, duration, remaining, eleType, System.currentTimeMillis());
+							history.add(song);
+						}
+
+						// Adjust for stream delay
+						int offsec = METADATA_DELAY;
+						for(int i=0; i<history.size(); i++) {
+							SongData song = history.get(i);
+							if(song.duration == 0)
+								return true;
+							int elapsed = song.duration - song.remaining;
+							if(elapsed < offsec) {
+								offsec -= elapsed;
+								history.remove(i);
+								i--;
+								continue;
+							}
+							else {
+								song.remaining += offsec;
+								return true;
+							}
+						}
 					}
-					return true;
 				}
 				return false;
 			} catch (DOMException e) {

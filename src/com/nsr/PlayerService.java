@@ -85,7 +85,8 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 		}
 		try {
 			mediaPlayer = new MediaPlayer();
-			String url = "http://stream.sysrq.no:8000/00-nsr.mp3";//"http://stream.sysrq.no:8000/01-nsr-mobile.mp3";
+//			String url = /*"http://stream.sysrq.no:8000/00-nsr.mp3";*/"http://stream.sysrq.no:8000/01-nsr-mobile.mp3";
+			String url = getResources().getString(R.string.settings_stream_url);
 			mediaPlayer.setDataSource(url);
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaPlayer.setOnPreparedListener(this);
@@ -179,7 +180,7 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 	
 	private void sendMetadata() {
 		if(metadataTracker == null) {
-			metadataTracker = new MetadataTracker(new Runnable() {
+			metadataTracker = new MetadataTracker(getResources().getString(R.string.settings_metadata_url), new Runnable() {
 				@Override
 				public void run() {
 					sendMetadata();
@@ -300,7 +301,7 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 		startForeground(NOTIFICATION, prepareNotification());
 
 		if(metadataTracker == null) {
-			metadataTracker = new MetadataTracker(new Runnable() {
+			metadataTracker = new MetadataTracker(getResources().getString(R.string.settings_metadata_url), new Runnable() {
 				@Override
 				public void run() {
 					sendMetadata();
