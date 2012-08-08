@@ -3,7 +3,7 @@
     <string name="app_name">NSR Player</string><string name="settings_stream_url">http://stream.sysrq.no:8000/01-nsr-mobile.mp3</string>
     <string name="settings_metadata_url">http://nsr-mb.samfunnet.no/xml/metadata?tracks=20</string><string name="settings_podcast_opml">http://nsr.samfunnet.no/podcasts.opml</string>
     
-    <string name="player_button_play">Start</string><string name="player_button_stop">Stop</string><string name="player_button_podcasts">Podcasts</string><string name="player_button_history">History</string><string name="player_background_description">NSR</string><string name="generic_ok">OK</string><string name="generic_wait">Please wait</string><string name="generic_separator">" - "</string><string name="notification_ticker">NSR now playing</string>
+    <string name="player_button_play">Start</string><string name="player_button_stop">Stop</string><string name="player_button_podcasts">Podcasts</string><string name="player_button_history">History</string><string name="player_background_description">NSR</string><string name="generic_ok">OK</string><string name="generic_wait">Please wait</string><string name="generic_separator">" - "</string><string name="generic_buffering">Every day I\'m bufferin</string><string name="generic_playing">Playing</string><string name="generic_error">Error</string><string name="notification_ticker">NSR now playing</string>
     <string name="notification_title">NSR</string>
     <string name="notification_text">NSR now playing</string>
     <string name="podcasts_parsing">Parsing data</string>
@@ -19,6 +19,10 @@
     <string name="history_artist">Artist:</string>
     <string name="history_title">Title:</string>
     <string name="history_album">Album:</string>
+    <string name="widget_title">NSR Widget</string>
+    
+    
+    
     
     
     

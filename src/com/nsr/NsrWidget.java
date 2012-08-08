@@ -24,7 +24,7 @@ public class NsrWidget extends AppWidgetProvider{
             
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
             views.setOnClickPendingIntent(R.id.widgetTextViewArtist, activityPendingIntent);
-            views.setTextViewText(R.id.widgetTextViewArtist, "NSR Widget");
+            views.setTextViewText(R.id.widgetTextViewArtist, context.getResources().getString(R.string.widget_title));
             
             if(PlayerService.getInstance() == null) {
 	            Intent startIntent = new Intent(context, PlayerService.class);

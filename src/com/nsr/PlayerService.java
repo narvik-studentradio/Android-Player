@@ -113,7 +113,7 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 		RemoteViews rv = new RemoteViews(getPackageName(), R.layout.widget_layout);
         rv.setOnClickPendingIntent(R.id.widgetImageView, PendingIntent.getService(this, 0, new Intent(), 0));
         rv.setImageViewResource(R.id.widgetImageView, R.drawable.nsr_widget_green);
-        rv.setTextViewText(R.id.widgetTextViewArtist, "Every day I'm bufferin");
+        rv.setTextViewText(R.id.widgetTextViewArtist, getResources().getString(R.string.generic_buffering));
         rv.setTextViewText(R.id.widgetTextViewTitle, "");
         
         sendRemoteViews(rv);
@@ -126,7 +126,7 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
         rv.setOnClickPendingIntent(R.id.widgetImageView, pendingIntent);
         rv.setImageViewResource(R.id.widgetImageView, R.drawable.nsr_widget_pause);
-        rv.setTextViewText(R.id.widgetTextViewArtist, "Playing");
+        rv.setTextViewText(R.id.widgetTextViewArtist, getResources().getString(R.string.generic_playing));
         rv.setTextViewText(R.id.widgetTextViewTitle, "");
 		
         sendRemoteViews(rv);
@@ -138,7 +138,7 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
         rv.setOnClickPendingIntent(R.id.widgetImageView, pendingIntent);
         rv.setImageViewResource(R.id.widgetImageView, R.drawable.nsr_widget_play);
-        rv.setTextViewText(R.id.widgetTextViewArtist, "NSR Widget");
+        rv.setTextViewText(R.id.widgetTextViewArtist, getResources().getString(R.string.widget_title));
         rv.setTextViewText(R.id.widgetTextViewTitle, "");
         
         sendRemoteViews(rv);
@@ -150,7 +150,7 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
         rv.setOnClickPendingIntent(R.id.widgetImageView, pendingIntent);
         rv.setImageViewResource(R.id.widgetImageView, R.drawable.nsr_widget_red);
-        rv.setTextViewText(R.id.widgetTextViewArtist, "Error");
+        rv.setTextViewText(R.id.widgetTextViewArtist, getResources().getString(R.string.generic_error));
         rv.setTextViewText(R.id.widgetTextViewTitle, "");
         
         sendRemoteViews(rv);
@@ -205,7 +205,9 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 		PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, playerIntent, 0);
 		String notificationText;
 		if(metadataTracker != null && metadataTracker.getPlaying() != null)
-			notificationText = metadataTracker.getPlaying().artist + " - " + metadataTracker.getPlaying().title;
+			notificationText = metadataTracker.getPlaying().artist + 
+							   getResources().getString(R.string.generic_separator) + 
+							   metadataTracker.getPlaying().title;
 		else
 			notificationText = resources.getString(R.string.notification_text);
 		serviceNotification.setLatestEventInfo(getApplicationContext(), resources.getString(R.string.notification_title), notificationText, pi);

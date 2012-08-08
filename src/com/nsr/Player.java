@@ -126,9 +126,8 @@ public class Player extends Activity implements OnClickListener {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if(intent.getAction().equals(PlayerService.INTENT_CALLBACK)) {
-				//Toast.makeText(Player.this, intent.getExtras().getString(PlayerService.KEY_MESSAGE), Toast.LENGTH_SHORT).show();
-				if(intent.getExtras().getString(PlayerService.KEY_MESSAGE).equals(PlayerService.MESSAGE_METADATA_UPDATE)) {
-					//Toast.makeText(Player.this, intent.getExtras().getString(PlayerService.KEY_METADATA_TITLE), Toast.LENGTH_SHORT).show();
+				String message = intent.getExtras().getString(PlayerService.KEY_MESSAGE);
+				if(message.equals(PlayerService.MESSAGE_METADATA_UPDATE)) {
 					Bundle extras = intent.getExtras();
 					String artist = extras.getString(PlayerService.KEY_METADATA_ARTIST);
 					String title = extras.getString(PlayerService.KEY_METADATA_TITLE);
@@ -139,6 +138,10 @@ public class Player extends Activity implements OnClickListener {
 					long timestamp = Long.parseLong(extras.getString(PlayerService.KEY_METADATA_TIMESTAMP));
 					SongData song = new SongData(artist, title, album, duration, remaining, type, timestamp);
 					metadataUpdate(song);
+				}
+				else if(message.equals(PlayerService.MESSAGE_ERROR)) {
+					txtArtist.setText(R.string.generic_error);
+					txtTitle.setText("");
 				}
 			}
 		}
