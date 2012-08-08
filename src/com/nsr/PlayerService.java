@@ -23,7 +23,7 @@ import android.os.IBinder;
 import android.widget.RemoteViews;
 
 public class PlayerService extends Service implements OnPreparedListener, OnErrorListener, OnCompletionListener {
-	private MediaPlayer mediaPlayer;
+	private final MediaPlayer mediaPlayer = new MediaPlayer();
 	private MetadataTracker metadataTracker;
 	private WidgetCommReceiver wcr = new WidgetCommReceiver();
 	private NotificationManager notificationManager;
@@ -78,13 +78,11 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 	}
 	
 	private void startPlayer() {
-		if(mediaPlayer != null) {
-			if(mediaPlayer.isPlaying())
-				return;
-			mediaPlayer.release();
-		}
+		if(mediaPlayer.isPlaying())
+			return;
 		try {
-			mediaPlayer = new MediaPlayer();
+//			mediaPlayer = new MediaPlayer();
+			mediaPlayer.reset();
 //			String url = /*"http://stream.sysrq.no:8000/00-nsr.mp3";*/"http://stream.sysrq.no:8000/01-nsr-mobile.mp3";
 			String url = getResources().getString(R.string.settings_stream_url);
 			mediaPlayer.setDataSource(url);
@@ -247,7 +245,7 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 			}
 		}).start();
 		
-		if(mediaPlayer != null && mediaPlayer.isPlaying())
+		if(mediaPlayer.isPlaying())
 			return START_STICKY;
 		
 		AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -257,10 +255,14 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 				switch(focusChange) {
 				case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
 				case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-					mediaPlayer.stop();
+					try {
+						mediaPlayer.stop();
+					} catch(IllegalStateException e) {
+					}
 					break;
 				case AudioManager.AUDIOFOCUS_GAIN:
-					startPlayer();
+					if(instance != null)
+						startPlayer();
 					break;
 				case AudioManager.AUDIOFOCUS_LOSS:
 				default:
@@ -282,8 +284,7 @@ public class PlayerService extends Service implements OnPreparedListener, OnErro
 			setWidgetError();
 		else
 			setWidgetStopped();
-		if(mediaPlayer != null)
-			mediaPlayer.release();
+		mediaPlayer.release();
 		instance = null;
 		if(metadataTracker != null)
 			metadataTracker.close();
