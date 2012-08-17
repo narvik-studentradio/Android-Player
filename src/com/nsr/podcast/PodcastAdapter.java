@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-public class PodcastAdapter extends BaseAdapter {
+class PodcastAdapter extends BaseAdapter {
 	private Context context;
 	private List<? extends Displayable> data;
 

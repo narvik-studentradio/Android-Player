@@ -1,6 +1,6 @@
 package com.nsr.podcast;
 
-public class PodcastStreamInfo implements Displayable {
+class PodcastStreamInfo implements Displayable {
 	public String description;
 	public String url;
 	public String text;

@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.nsr.R;
 
-public class PodcastItem<T extends Displayable> extends LinearLayout {
+class PodcastItem<T extends Displayable> extends LinearLayout {
 	private T data;
 	private TextView textViewTitle;
 	private TextView textViewText;

@@ -37,7 +37,7 @@ import android.widget.ListView;
 import com.nsr.Player;
 import com.nsr.R;
 
-public class Podcasts extends Activity {
+class Podcasts extends Activity {
 	private static final int DIALOG_ERROR = 0;
 	private Resources resources;
 	private ArrayList<PodcastData> data;
