@@ -1,16 +1,7 @@
 package com.nsr.podcast;
 
 import android.content.Context;
-import android.text.Spannable;
-import android.text.method.MovementMethod;
-import android.text.method.ScrollingMovementMethod;
-import android.util.DisplayMetrics;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,12 +24,6 @@ class PodcastItem<T extends Displayable> extends LinearLayout {
 		
 		textViewTitle.setText(data.getTitle());
 		textViewText.setText(data.getText());
-		
-//		DisplayMetrics dm = getResources().getDisplayMetrics();
-//		TranslateAnimation ta = new TranslateAnimation(0.0f, -1 * dm.widthPixels, 0.0f, 0.0f);
-//		ta.setDuration(10000);
-//		ta.setRepeatCount(Animation.INFINITE);
-//		textViewText.startAnimation(ta);
 	}
 
 	public void setTitle(String title) {

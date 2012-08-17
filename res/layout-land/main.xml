@@ -54,7 +54,8 @@
         		 android:layout_toLeftOf="@id/table1"
         		 android:layout_marginRight="5dp"
         		 >
-		<TextView android:id="@+id/appTxtArtist" 
+		<com.nsr.ScrollingTextView
+		    	  android:id="@+id/appTxtArtist" 
   				  android:layout_width="fill_parent"
   				  android:layout_height="wrap_content"
   				  android:background="@drawable/textfield_basic"
@@ -62,7 +63,8 @@
  				  android:textColor="#000"
   				  
    				  />
-		<TextView android:id="@+id/appTxtTitle" 
+		<com.nsr.ScrollingTextView
+		    	  android:id="@+id/appTxtTitle" 
 				  android:layout_width="fill_parent"
 				  android:layout_height="wrap_content"
   				  android:background="@drawable/textfield_basic"

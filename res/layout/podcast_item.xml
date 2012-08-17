@@ -15,12 +15,14 @@
    		<TextView android:layout_width="fill_parent"
    		    	  android:layout_height="fill_parent"
    		    	  android:background="#4F00"
+   		    	  android:id="@+id/podcastItem_caption_title"
    		    	  android:text="@string/podcasts_title"
    		    	  android:paddingLeft="10dp"
 	     		  android:textColor="#000"
 	     		  android:paddingRight="5dp"
    		    	  />
-        <TextView android:layout_width="fill_parent"
+        <com.nsr.ScrollingTextView
+            	  android:layout_width="wrap_content"
         		  android:id="@+id/podcastItem_title"
         		  android:layout_height="wrap_content"
 	     		  android:paddingLeft="5dp"
@@ -34,12 +36,14 @@
    		<TextView android:layout_width="fill_parent"
    		    	  android:layout_height="fill_parent"
    		    	  android:background="#40F0"
+   		    	  android:id="@+id/podcastItem_caption_text"
    		    	  android:text="@string/podcasts_text"
    		    	  android:paddingLeft="10dp"
 	     		  android:textColor="#000"
 	     		  android:paddingRight="5dp"
    		    	  />
-		<TextView android:layout_width="fill_parent"
+		<com.nsr.ScrollingTextView
+		    	  android:layout_width="wrap_content"
         		  android:id="@+id/podcastItem_text"
         		  android:layout_height="wrap_content"
 	     		  android:paddingLeft="5dp"
