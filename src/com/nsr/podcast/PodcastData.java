@@ -3,11 +3,11 @@ package com.nsr.podcast;
 class PodcastData implements Displayable {
 	public String url;
 	public String description;
-	public String date;
+	public String title;
 	
 	@Override
 	public String getTitle() {
-		return date;
+		return title;
 	}
 	
 	@Override

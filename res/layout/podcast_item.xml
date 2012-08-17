@@ -1,15 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:orientation="vertical">
-    <TextView android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:id="@+id/podcastItem_title"
-              ></TextView>
-    <TextView android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:id="@+id/podcastItem_text"
-              ></TextView>
-</LinearLayout>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ 			 android:layout_width="match_parent"
+  			 android:layout_height="match_parent"
+  			 android:orientation="vertical"
+    		 android:id="@+id/tableLayout1"
+    		 android:background="@drawable/history_item_background"
+    		 android:layout_marginTop="5dp"
+    		 android:layout_marginBottom="5dp"
+    		 >
+    <TableRow android:id="@+id/tableRow1"
+    		  android:layout_width="match_parent"
+    		  android:layout_height="wrap_content"
+    		  >
+   		<TextView android:layout_width="fill_parent"
+   		    	  android:layout_height="fill_parent"
+   		    	  android:background="#4F00"
+   		    	  android:text="@string/podcasts_title"
+   		    	  android:paddingLeft="10dp"
+	     		  android:textColor="#000"
+	     		  android:paddingRight="5dp"
+   		    	  />
+        <TextView android:layout_width="fill_parent"
+        		  android:id="@+id/podcastItem_title"
+        		  android:layout_height="wrap_content"
+	     		  android:paddingLeft="5dp"
+	     		  android:textColor="#000"
+        		  />
+	</TableRow>
+	<TableRow android:layout_height="wrap_content"
+	 		  android:layout_width="match_parent"
+	 		  android:id="@+id/tableRow2"
+	 		  >
+   		<TextView android:layout_width="fill_parent"
+   		    	  android:layout_height="fill_parent"
+   		    	  android:background="#40F0"
+   		    	  android:text="@string/podcasts_text"
+   		    	  android:paddingLeft="10dp"
+	     		  android:textColor="#000"
+	     		  android:paddingRight="5dp"
+   		    	  />
+		<TextView android:layout_width="fill_parent"
+        		  android:id="@+id/podcastItem_text"
+        		  android:layout_height="wrap_content"
+	     		  android:paddingLeft="5dp"
+	     		  android:textColor="#000"
+        		  />
+	</TableRow>
+</TableLayout>

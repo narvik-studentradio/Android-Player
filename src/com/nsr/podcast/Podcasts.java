@@ -37,7 +37,7 @@ import android.widget.ListView;
 import com.nsr.Player;
 import com.nsr.R;
 
-class Podcasts extends Activity {
+public class Podcasts extends Activity {
 	private static final int DIALOG_ERROR = 0;
 	private Resources resources;
 	private ArrayList<PodcastData> data;
@@ -172,12 +172,12 @@ class Podcasts extends Activity {
 						String eleUrl = enclosure.getAttribute("url");
 						if(eleUrl.equals(""))
 							continue;
-						String eleDate = ele.getElementsByTagName("pubDate").item(0).getFirstChild().getNodeValue();
+						String eleDesc = ele.getElementsByTagName("description").item(0).getFirstChild().getNodeValue();
 						
 						PodcastData thisCast = new PodcastData();
 						
-						thisCast.description = eleTitle;
-						thisCast.date = eleDate;
+						thisCast.description = eleDesc;
+						thisCast.title = eleTitle;
 						thisCast.url = eleUrl;
 						
 						result.add(thisCast);
