@@ -20,7 +20,8 @@
 	     		  android:textColor="#000"
 	     		  android:paddingRight="5dp"
    		    	  />
-        <TextView android:layout_width="fill_parent"
+        <com.nsr.ScrollingTextView
+            	  android:layout_width="wrap_content"
         		  android:id="@+id/songTxtArtist"
         		  android:layout_height="wrap_content"
 	     		  android:paddingLeft="5dp"
@@ -39,7 +40,8 @@
 	     		  android:textColor="#000"
 	     		  android:paddingRight="5dp"
    		    	  />
-		<TextView android:layout_width="fill_parent"
+		<com.nsr.ScrollingTextView
+		    	  android:layout_width="wrap_content"
         		  android:id="@+id/songTxtTitle"
         		  android:layout_height="wrap_content"
 	     		  android:paddingLeft="5dp"
@@ -58,8 +60,9 @@
 	     		  android:textColor="#000"
 	     		  android:paddingRight="5dp"
    		    	  />
-	    <TextView android:id="@+id/songTxtAlbum"
-	     		  android:layout_width="fill_parent"
+	    <com.nsr.ScrollingTextView
+	  	          android:id="@+id/songTxtAlbum"
+	     		  android:layout_width="wrap_content"
 	     		  android:layout_height="wrap_content"
 	     		  android:paddingLeft="5dp"
 	     		  android:textColor="#000"
