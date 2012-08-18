@@ -16,7 +16,6 @@ public class NsrWidget extends AppWidgetProvider{
 
         for (int i=0; i<N; i++) {
             int appWidgetId = appWidgetIds[i];
-
      
             Intent activityIntent = new Intent(context, Player.class);
             activityIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -46,19 +45,4 @@ public class NsrWidget extends AppWidgetProvider{
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
 	}
-
-/*
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		String pn = NsrWidget.class.getName();
-		RemoteViews views = new RemoteViews(pn, R.layout.widget_layout);
-        Intent startIntent = new Intent(context, PlayerService.class);
-        PendingIntent startPendingIntent = PendingIntent.getService(context, 0, startIntent, 0);
-    	views.setOnClickPendingIntent(R.id.widgetImageView, startPendingIntent);
-    	views.setImageViewResource(R.id.widgetImageView, R.drawable.nsr_watermark1);
-    	ComponentName cn = new ComponentName(context, NsrWidget.class);
-    	AppWidgetManager.getInstance(context).updateAppWidget(cn, views);
-		super.onReceive(context, intent);
-	}*/
-	
 }

@@ -9,14 +9,33 @@
   android:paddingRight="17px"
   android:paddingTop="23px"
   android:paddingBottom="23px"
-  android:id="@+id/widgetLayout">
+  android:id="@+id/widgetLayout"
+  >
     <ImageView android:layout_height="fill_parent"
 			   android:src="@drawable/nsr_widget_play"
 			   android:layout_width="wrap_content"
-			   android:id="@+id/widgetImageView"></ImageView>
-    <LinearLayout android:paddingLeft="10px" android:id="@+id/linearLayout1" android:orientation="vertical" android:layout_height="match_parent" android:layout_width="wrap_content">
-        <TextView android:singleLine="true" android:ellipsize="marquee" android:marqueeRepeatLimit="marquee_forever" android:id="@+id/widgetTextViewArtist" android:text="TextView1" android:layout_height="wrap_content" android:layout_width="fill_parent" android:textColor="#000000"></TextView>
-        <TextView android:singleLine="true" android:ellipsize="marquee" android:marqueeRepeatLimit="marquee_forever" android:id="@+id/widgetTextViewTitle" android:text="TextView2" android:layout_height="wrap_content" android:layout_width="fill_parent"></TextView>
+			   android:id="@+id/widgetImageView"
+			   />
+    <LinearLayout android:layout_width="fill_parent"
+        		  android:layout_height="fill_parent"
+        		  android:orientation="vertical"
+        		  android:layout_marginLeft="10dp"
+        		  >
+	    <TextView android:id="@+id/widgetTextViewArtist" 
+	        	  android:layout_height="wrap_content" 
+	        	  android:layout_width="fill_parent"
+	        	  android:background="#4FFF" 
+	        	  android:textColor="#000"
+	        	  android:layout_margin="2dp"
+	        	  android:paddingLeft="5dp"
+	        	  />
+	    <TextView android:id="@+id/widgetTextViewTitle" 
+	        	  android:layout_height="wrap_content" 
+	        	  android:layout_width="fill_parent"
+	        	  android:background="#4FFF"
+	        	  android:textColor="#000"
+	        	  android:layout_margin="2dp"
+	        	  android:paddingLeft="5dp"
+	        	  />
     </LinearLayout>
-    
 </LinearLayout>
