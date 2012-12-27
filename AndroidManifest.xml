@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 
-    <application android:label="@string/app_name" android:icon="@drawable/nsr3">
+    <application android:label="@string/app_name" android:icon="@drawable/nsr3" android:allowBackup="true">
         <activity android:name=".Player"
                   android:label="@string/app_name"
                   android:launchMode="singleTask">
@@ -28,6 +28,12 @@
         <activity android:label="Podcast feeds" android:name=".podcast.PodcastStreams"></activity>
         <activity android:label="Podcasts" android:name=".podcast.Podcasts" android:configChanges="orientation"></activity>
         <activity android:name="History" android:label="Radio history"></activity>
+        <receiver android:enabled="true" android:name=".podcast.Podcasts$DownloadReceiver">
+            <intent-filter android:priority="100">
+                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED"/>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 </manifest>

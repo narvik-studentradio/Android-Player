@@ -21,10 +21,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.app.DownloadManager.Query;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -201,6 +205,38 @@ public class Podcasts extends Activity {
 			data = result;
 			initList();
 			pd.dismiss();
+		}
+	}
+	
+	public static class DownloadReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if(intent.getAction().equals(DownloadManager.ACTION_NOTIFICATION_CLICKED)) {
+				Intent dm = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
+				dm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(dm);
+			}
+			else if(intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
+				long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+				if(id == -1)
+					return;
+				
+				DownloadManager dm = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
+				Query q = new Query();
+				q.setFilterById(id);
+				Cursor c = dm.query(q);
+				if(!c.moveToFirst())
+					return;
+				
+				String localUri = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+				String title = c.getString(c.getColumnIndex(DownloadManager.COLUMN_TITLE));
+				if(title.equals(context.getResources().getString(R.string.podcasts_downloadmanager_title))) {
+					Intent scan = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+					Uri parsed = Uri.parse(localUri);
+					scan.setData(parsed);
+					context.sendBroadcast(scan);
+				}
+			}
 		}
 	}
 }
