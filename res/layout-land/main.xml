@@ -54,7 +54,7 @@
         		 android:layout_toLeftOf="@id/table1"
         		 android:layout_marginRight="5dp"
         		 >
-		<com.nsr.ScrollingTextView
+		<no.samfunnet.nsr.ScrollingTextView
 		    	  android:id="@+id/appTxtArtist" 
   				  android:layout_width="fill_parent"
   				  android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
  				  android:textColor="#000"
   				  
    				  />
-		<com.nsr.ScrollingTextView
+		<no.samfunnet.nsr.ScrollingTextView
 		    	  android:id="@+id/appTxtTitle" 
 				  android:layout_width="fill_parent"
 				  android:layout_height="wrap_content"
